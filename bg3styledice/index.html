@@ -326,6 +326,16 @@
       will-change: transform, opacity;
       transition: none;
     }
+	
+	.explosion-particle-fail {
+	  position: fixed;
+	  pointer-events: none;
+	  z-index: 99999;
+	  will-change: transform, opacity;
+	  transition: none;
+	  border-radius: 50%;
+	}
+
   </style>
 </head>
 <body>
@@ -372,6 +382,7 @@
 
   <!-- GOLD PARTICLE ANİMASYONU DOSYASI -->
   <script src="goldParticles.js"></script>
+  <script src="explosionParticles.js"></script>
 
   <script>
     const diceImg = document.getElementById('dice-img');
@@ -464,7 +475,11 @@
 
       if (success) {
         setTimeout(() => {
-          showBadge("Başarılı!", "success");
+		  if (face >= 18) {
+			showBadge("Kritik Başarı!", "success");
+		  } else {
+			showBadge("Başarılı!", "success");
+		  }
           // ALTIN PARTİKÜLLERİ OLUŞTUR
           const rect = diceAnimBox.getBoundingClientRect();
           const centerX = rect.left + rect.width/2;
@@ -472,7 +487,7 @@
           if (typeof createGoldParticles === "function") {
             createGoldParticles(centerX, centerY);
           }
-        }, 3000);
+        }, 2200);
 
         diceAnimBox.classList.add("green-glow");
         diceImg.classList.remove("success-bounce");
@@ -493,7 +508,7 @@
           setTimeout(() => {
             difficultyValue.classList.remove("bounce-up");
           }, 850);
-        }, 1000);
+        }, 1200);
 
         setTimeout(() => {
           diceImg.classList.remove("crash-grow", "crash-shrink");
@@ -519,7 +534,13 @@
         }, 3500);
 
       } else {
-        showBadge("Başarısız...", "failure");
+		  setTimeout(() => {
+			if (face < 3) {
+			  showBadge("Kritik Başarısızlık!", "failure");
+			} else {
+			  showBadge("Başarısız...", "failure");
+			}
+		  }, 3700);
         setTimeout(() => {
           difficultyValue.classList.add("failure");
           setTimeout(() => {
@@ -548,6 +569,16 @@
                 setTimeout(() => {
                   difficultyValue.classList.add("carpisma-fade");
                   diceAnimBox.classList.add("dice-shake");
+				  
+				  // Patlama partikül efektini başlat
+					const rect = diceAnimBox.getBoundingClientRect();
+					const centerX = rect.left + rect.width/2 + window.scrollX;
+					const centerY = rect.top + rect.height/2 + window.scrollY;
+					if (typeof createFailExplosion === "function") {
+					  createFailExplosion(centerX, centerY);
+					}
+
+
                   setTimeout(() => {
                     diceAnimBox.classList.remove("dice-shake");
                     diceAnimBox.classList.add("dice-shrink");
