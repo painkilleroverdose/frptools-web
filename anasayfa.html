@@ -3,155 +3,264 @@
 <head>
   <meta charset="UTF-8">
   <title>Projelerim Ana Sayfa</title>
-  <link href="https://fonts.googleapis.com/css?family=Cinzel:700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #181920;
-      --header-bg: #23242c;
-      --card-bg: #24262f;
-      --accent: #b08d57;
-      --text: #fff;
-      --card-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      --card-radius: 20px;
+      --color1: #6a82fb;
+      --color2: #fc5c7d;
+      --color3: #43e97b;
+      --color4: #38f9d7;
+      --color5: #fffd87;
+      --color6: #f7971e;
+      --text: #23242c;
+      --card-bg: rgba(255,255,255,0.87);
+      --shadow: 0 10px 36px rgba(36,36,44,0.14), 0 1.5px 8px 0px rgba(0,0,0,0.14);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     body {
-      margin: 0;
       min-height: 100vh;
-      background: var(--bg);
+      background: linear-gradient(125deg, var(--color1), var(--color2) 55%, var(--color3), var(--color4));
+      background-size: 180% 180%;
+      animation: bgMove 16s ease-in-out infinite alternate;
+      font-family: 'Roboto', Arial, sans-serif;
       color: var(--text);
-      font-family: 'Cinzel', serif;
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+    @keyframes bgMove {
+      0% {background-position: 0 0;}
+      100% {background-position: 100% 100%;}
     }
     .header {
-      width: 100%;
-      background: var(--header-bg);
-      padding: 36px 0 22px 0;
-      box-shadow: 0 3px 14px #0005;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-radius: 0 0 32px 32px;
+      margin-top: 54px;
+      margin-bottom: 20px;
+      text-align: center;
+      z-index: 2;
     }
     .header h1 {
+      font-family: 'Montserrat', 'Cinzel', serif;
       font-size: 2.7rem;
-      color: var(--accent);
-      margin: 0 0 8px 0;
-      text-shadow: 0 2px 8px #0007;
+      font-weight: 800;
       letter-spacing: 1.5px;
+      color: var(--card-bg);
+      text-shadow: 0 8px 32px #0006, 0 2px 0 #38f9d7;
+      margin-bottom: 8px;
+      animation: floatTitle 2.4s ease-in-out;
     }
     .header p {
-      color: #e1cfa7;
-      font-size: 1.05rem;
+      color: #fff;
+      font-size: 1.14rem;
       letter-spacing: 0.3px;
       margin: 0;
-      opacity: 0.87;
+      opacity: 0.92;
+      text-shadow: 0 2px 18px #23242c80;
+      font-weight: 600;
+    }
+    @keyframes floatTitle {
+      0% { transform: translateY(-40px) scale(1.1); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1;}
     }
     .card-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 34px;
+      gap: 38px;
       justify-content: center;
-      width: 100%;
-      max-width: 950px;
-      margin: 50px 0 0 0;
+      width: 95vw;
+      max-width: 1080px;
+      margin: 40px 0 0 0;
+      position: relative;
+      z-index: 1;
     }
     .card {
       background: var(--card-bg);
-      border-radius: var(--card-radius);
-      box-shadow: var(--card-shadow);
-      padding: 38px 32px 32px 32px;
-      min-width: 260px;
-      max-width: 330px;
-      flex: 1 1 260px;
+      border-radius: 25px;
+      box-shadow: var(--shadow);
+      padding: 40px 36px 34px 36px;
+      min-width: 250px;
+      max-width: 320px;
+      flex: 1 1 265px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      border: 2.5px solid transparent;
+      border: none;
       position: relative;
-      transition: transform .15s, border-color .15s, box-shadow .15s;
+      transition: 
+        box-shadow 0.25s cubic-bezier(.4,2,.7,.8),
+        background 0.26s cubic-bezier(.51,2,.7,.8),
+        filter .18s,
+        transform .20s cubic-bezier(.39,1.79,.58,.98);
       cursor: pointer;
+      user-select: none;
+      will-change: transform;
+      outline: none;
+      /* For pointer event effect: */
+      perspective: 900px;
+      backface-visibility: hidden;
+      margin-bottom: 16px;
     }
-    .card:hover {
-      transform: translateY(-6px) scale(1.03);
-      border-color: var(--accent);
-      box-shadow: 0 14px 36px rgba(176, 141, 87, 0.16), var(--card-shadow);
+    .card:before {
+      content: "";
+      position: absolute;
+      left: 18px; top: 18px; right: 18px; bottom: 18px;
+      border-radius: 19px;
+      background: linear-gradient(120deg, var(--color5), var(--color2) 75%);
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 0;
     }
     .card-title {
-      font-size: 1.18rem;
-      color: var(--accent);
+      font-size: 1.22rem;
+      font-family: 'Montserrat', 'Roboto', serif;
+      color: var(--color2);
       font-weight: bold;
-      margin-bottom: 10px;
       letter-spacing: .5px;
+      z-index: 1;
+      margin-bottom: 8px;
+      text-shadow: 0 1px 3px #fff9, 0 2px 10px #43e97b88;
     }
     .card-desc {
-      font-size: 1.01rem;
-      color: #e3e2dd;
-      margin-bottom: 17px;
+      font-size: 1.07rem;
+      color: #23242cdd;
+      margin-bottom: 18px;
+      z-index: 1;
+      font-weight: 500;
     }
     .open-btn {
       margin-top: auto;
-      padding: 10px 24px;
-      background: var(--accent);
-      color: #181920;
+      padding: 11px 28px;
+      background: linear-gradient(90deg, var(--color2) 60%, var(--color4));
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 11px;
+      font-size: 1.08rem;
       font-family: inherit;
       font-weight: bold;
-      letter-spacing: .5px;
+      letter-spacing: .4px;
       cursor: pointer;
-      transition: background .14s, color .14s;
-      box-shadow: 0 3px 10px #0003;
+      transition: 
+        background .16s, 
+        color .14s, 
+        box-shadow .18s;
+      box-shadow: 0 2px 9px #43e97b40;
+      z-index: 1;
     }
-    .open-btn:hover {
-      background: #fff4;
-      color: var(--accent);
+    .open-btn:hover, .card:active .open-btn {
+      background: linear-gradient(90deg, var(--color3) 20%, var(--color6) 90%);
+      color: var(--color2);
+      box-shadow: 0 3px 18px #43e97b59;
     }
-    @media (max-width: 800px) {
-      .card-list {
-        flex-direction: column;
-        align-items: center;
-        gap: 28px;
-      }
-      .card {
-        max-width: 90vw;
-      }
-      .header h1 {
-        font-size: 2rem;
-      }
+    .card:hover, .card:focus-visible {
+      box-shadow: 0 8px 36px 4px #fc5c7d35, 0 1.5px 8px 0px #38f9d7cc;
+      background: linear-gradient(111deg, #fff 84%, #ffe9c8 120%);
+      filter: brightness(1.05);
+    }
+    @media (max-width: 900px) {
+      .card-list {flex-direction: column; gap: 30px;}
+      .card {max-width: 90vw;}
+      .header h1 {font-size: 1.9rem;}
+    }
+    /* Görsel parıltı efekti: */
+    .gradient-circles {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.23;
+      filter: blur(25px);
+      animation: moveCircle 22s linear infinite alternate;
+      mix-blend-mode: lighten;
+    }
+    .circle1 {background: var(--color3); width: 320px; height: 320px; left: 9vw; top: 12vh;}
+    .circle2 {background: var(--color2); width: 270px; height: 270px; left: 63vw; top: 19vh;}
+    .circle3 {background: var(--color4); width: 190px; height: 190px; left: 39vw; top: 61vh;}
+    @keyframes moveCircle {
+      to { transform: translateY(-60px) translateX(80px) scale(1.07);}
     }
   </style>
 </head>
 <body>
+  <!-- Parıltı animasyonları için dekoratif elementler -->
+  <div class="gradient-circles">
+    <div class="circle circle1"></div>
+    <div class="circle circle2"></div>
+    <div class="circle circle3"></div>
+  </div>
   <div class="header">
     <h1>Projelerim Ana Sayfa</h1>
-    <p>D&D yayın araçların ve diğer yardımcı projelerin</p>
+    <p>D&D yayın araçların ve yardımcı projelerin</p>
   </div>
   <div class="card-list">
-    <div class="card" onclick="window.location='BATTLE/battle.html'">
+    <div class="card" tabindex="0" onclick="window.location='BATTLE/battle.html'">
       <div class="card-title">D&D OBS Savaş Sahnesi Yaratma</div>
       <div class="card-desc">OBS veya yayın için özelleştirilebilir D&D savaş sahnesi oluşturma aracı.</div>
       <button class="open-btn">Aç</button>
     </div>
-    <div class="card" onclick="window.location='hp-tracker.html'">
+    <div class="card" tabindex="0" onclick="window.location='hp-tracker.html'">
       <div class="card-title">HP Takip Aracı</div>
       <div class="card-desc">Karakterlerin can, zırh ve inisiyatiflerini takip et.</div>
       <button class="open-btn">Aç</button>
     </div>
-    <div class="card" onclick="window.location='bg3styledice/index.html'">
+    <div class="card" tabindex="0" onclick="window.location='bg3styledice/index.html'">
       <div class="card-title">3D Zar Atıcı (BG3 Style)</div>
       <div class="card-desc">Baldur's Gate 3 tarzı fizik tabanlı 3D zar simülatörü.</div>
       <button class="open-btn">Aç</button>
     </div>
     <!-- Yeni kart eklemek için buraya kopyala:
-    <div class="card" onclick="window.location='dosya-adı.html'">
+    <div class="card" tabindex="0" onclick="window.location='dosya-adı.html'">
       <div class="card-title">Başlık</div>
       <div class="card-desc">Açıklama.</div>
       <button class="open-btn">Aç</button>
     </div>
     -->
   </div>
+  <script>
+    // Kartların imleci takip eden efekti için:
+    const cards = document.querySelectorAll('.card');
+    let mouseX = 0, mouseY = 0;
+
+    // Sayfa mouse hareketlerini takip et
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardX = rect.left + rect.width / 2;
+        const cardY = rect.top + rect.height / 2;
+        // Kart merkezinden imlece olan fark
+        const deltaX = (mouseX - cardX) / rect.width * 18;  // Maks 18 derece
+        const deltaY = (mouseY - cardY) / rect.height * 18;
+        // Yumuşak animasyon için requestAnimationFrame ile geçişli hareket
+        card.style.transform = `perspective(900px) rotateY(${deltaX}deg) rotateX(${-deltaY}deg) scale(1.03)`;
+        // Kayan gölge efekti
+        card.style.boxShadow = `0 ${10 + deltaY}px ${36 + Math.abs(deltaX)}px 4px #fc5c7d35, 0 1.5px 8px 0px #38f9d7cc`;
+      });
+    });
+
+    // Mouse kartların üzerinden çıkınca pozisyonları sıfırla (yavaşça!)
+    function resetCard(card) {
+      card.style.transition = 'transform .6s cubic-bezier(.26,1.55,.6,1)';
+      card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) scale(1)';
+      setTimeout(() => card.style.transition = '', 600);
+    }
+    cards.forEach(card => {
+      card.addEventListener('mouseleave', () => resetCard(card));
+      card.addEventListener('blur', () => resetCard(card)); // Klavyeyle kart seçiliyse de sıfırla
+      // Kartlara odaklanınca (klavye erişimi için) biraz büyütme
+      card.addEventListener('focus', () => {
+        card.style.transform = 'scale(1.05)';
+      });
+    });
+  </script>
 </body>
 </html>
