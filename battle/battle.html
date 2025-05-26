@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>D&D Takım Kartları</title>
+  <link href="https://fonts.googleapis.com/css?family=Cinzel:700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg-color: #1e221e; }
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      color: #e6d8b9;
+      font-family: 'Cinzel', serif;
+      min-height: 100vh;
+      transition: background 0.5s;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    .container { width: 90vw; margin: 40px auto 0 auto; display: flex; flex-direction: column; align-items: center; }
+    .team-label { font-size: 1.5em; letter-spacing: 2px; color: #ceb179; margin: 14px 0 8px 0; text-shadow: 1px 1px 5px #000a; }
+    .team-row { min-height: 90px; min-width: 900px; background: rgba(40,32,20,0.16); border: 3px solid #46371e; border-radius: 12px; display: flex; flex-direction: row; align-items: flex-end; gap: 22px; padding: 16px 12px 16px 12px; margin-bottom: 24px; box-shadow: 0 0 10px #0006; flex-wrap: wrap; }
+    .img-card { position: relative; margin: 0 6px; display: inline-block; background: none; border-radius: 15px; border: 3px solid #2a2320; background: #252015; box-shadow: 0 0 10px #000a; padding: 0; }
+    .img-card img { display: block; border-radius: 12px; width: auto; height: auto; max-width: 270px; max-height: 270px; min-width: 130px; min-height: 130px; object-fit: contain; pointer-events: auto; }
+    .remove-btn { position: absolute; top: 8px; right: 8px; background: #241909; border: 2px solid #ad6f48; color: #dcb070; border-radius: 50%; width: 24px; height: 24px; font-size: 1.2em; cursor: pointer; text-align: center; line-height: 19px; transition: background 0.15s; z-index: 2; }
+    .remove-btn:hover { background: #8d3434; color: #fff4d4; }
+    .add-card { width: 120px; height: 120px; background: rgba(65, 54, 37, 0.23); border: 3px dashed #b9a174; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 2.7em; color: #b79c6b; transition: background 0.17s; position: relative; }
+    .add-card:hover { background: rgba(184,158,97,0.07); }
+    input[type="file"] { display: none; }
+    .start-btn { background: #b9a174; color: #252017; font-size: 1.2em; font-family: 'Cinzel', serif; border: 2px solid #a08c5c; border-radius: 10px; padding: 10px 26px; cursor: pointer; margin: 18px 0 30px 0; box-shadow: 0 0 8px #0006; letter-spacing: 2px; transition: background 0.2s; }
+    .start-btn:hover { background: #e7d0a8; color: #7a6540; }
+    .custom-bg-btn { position: fixed; top: 30px; right: 104px; z-index: 102; background: #46371e; color: #f3e7d0; border: 2px solid #b9a174; border-radius: 15px; width: 56px; height: 56px; font-size: 1.8em; cursor: pointer; box-shadow: 0 0 14px #0007; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-radius 0.2s; }
+    .custom-bg-btn:hover { background: #947a3d; color: #fff; }
+    .battle-mode .custom-bg-btn,
+    .battle-mode #customBgInput { display: none !important; }
+    .settings-btn { position: fixed; top: 30px; right: 38px; z-index: 101; background: #46371e; color: #f3e7d0; border: 2px solid #b9a174; border-radius: 15px; width: 56px; height: 56px; font-size: 2em; cursor: pointer; box-shadow: 0 0 14px #0007; display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-radius 0.2s; }
+    .settings-btn:hover { background: #7a6840; color: #fff; }
+    .settings-panel { display: none; position: fixed; top: 100px; right: 38px; z-index: 101; background: #332610e8; color: #f3e7d0; border: 2px solid #b9a174; border-radius: 18px; box-shadow: 0 0 26px #000d; padding: 20px 26px 16px 26px; min-width: 230px; }
+    .settings-panel.active { display: block; }
+    .settings-panel label { font-size: 1.05em; color: #ffe3b6; margin-bottom: 10px; display: block; }
+    .settings-panel input[type="color"] { width: 44px; height: 32px; border: none; border-radius: 8px; margin-top: 6px; background: none; }
+    .settings-panel .close-btn { position: absolute; top: 10px; right: 18px; background: transparent; border: none; color: #ffe3b6; font-size: 1.4em; cursor: pointer; }
+    .settings-panel .slider-label { margin-top: 12px; }
+    .settings-panel .volume-slider { width: 130px; height: 6px; margin-top: 8px; margin-bottom: 2px; accent-color: #ceb179; }
+    .end-btn {
+      display: none;
+      position: fixed;
+      right: 15px;
+      bottom: 15px;
+      background: #a83939;
+      color: #fff2de;
+      font-size: 1.3em;
+      font-family: 'Cinzel', serif;
+      border: 2px solid #803939;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      cursor: pointer;
+      box-shadow: 0 0 8px #0008;
+      z-index: 100;
+      letter-spacing: 1px;
+      transition: background 0.2s, box-shadow 0.2s, width 0.2s, height 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .battle-mode .settings-btn,
+    .battle-mode .end-btn {
+      opacity: 0;
+      pointer-events: auto;
+      transition: opacity 0.2s;
+    }
+    .battle-mode .settings-btn:hover,
+    .battle-mode .end-btn:hover {
+      opacity: 1;
+    }
+    .battle-mode .end-btn { display: flex !important; }
+    .end-btn span { font-size: 1.1em; }
+    .battle-mode .battle-img { border: none !important; background: none !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 2px; width: auto; height: auto; max-width: 340px; max-height: 340px; min-width: 190px; min-height: 190px; object-fit: contain; pointer-events: auto; cursor: pointer; transition: transform 0.16s cubic-bezier(.4,1.5,.6,1), filter 0.22s, box-shadow 0.22s; outline: none; z-index: 1; }
+    .battle-mode .battle-img.selected { transform: scale(1.13) rotate(-1.7deg); animation: card-glow-fire 1.2s infinite; z-index: 21 !important; filter: drop-shadow(0 0 16px #ffcd6b) drop-shadow(0 0 32px #d47b22) drop-shadow(0 0 54px #d12700cc);}
+    .battle-mode .battle-img.hit { z-index: 15 !important; animation: shakeHit 0.35s cubic-bezier(.6,2,.5,1) 1;}
+    @keyframes card-glow-fire {0%{box-shadow:0 0 26px 9px #ffcd6b40,0 0 60px 0 #d1270025;}25%{box-shadow:0 0 44px 19px #ffa92854,0 0 80px 8px #d1270044;}50%{box-shadow:0 0 65px 32px #ffe36b66,0 0 120px 14px #ff5b0044;}75%{box-shadow:0 0 35px 14px #ffa92840,0 0 60px 4px #d1270040;}100%{box-shadow:0 0 26px 9px #ffcd6b40,0 0 60px 0 #d1270025;}}
+    @keyframes attackMoveFast {
+      0%   { transform: scale(1.13) rotate(-1.7deg) translate(0,0);}
+      100% { transform: scale(0.7) translate(var(--tx,0px), var(--ty,0px)); }
+    }
+    @keyframes attackMoveBack {
+      0%   { transform: scale(0.7) translate(var(--tx,0px), var(--ty,0px)); }
+      100% { transform: scale(1.13) rotate(-1.7deg) translate(0,0);}
+    }
+    @keyframes shakeHit {
+      0% { filter: brightness(1); transform: scale(1) translate(0,0);}
+      20% { filter: brightness(1.8); transform: scale(1.05) translate(-5px,2px);}
+      35% { filter: brightness(1.1); transform: scale(1) translate(8px,-3px);}
+      60% { filter: brightness(1.2); transform: scale(1.06) translate(-3px,6px);}
+      80% { filter: brightness(1); transform: scale(1) translate(0,0);}
+      100% { filter: brightness(1); transform: scale(1) translate(0,0);}
+    }
+    .battle-mode #battle-team1-row,
+    .battle-mode #battle-team2-row {
+      z-index: 100;
+    }
+    .battle-mode .battle-team-row { position: fixed; left: 0; width: 100vw; display: flex; flex-direction: row; justify-content: center; gap: 12px; z-index: 99; pointer-events: none; background: none; }
+    .battle-mode #battle-team1-row { top: 0; align-items: flex-start; padding-top: 40px; padding-bottom: 9vh; }
+    .battle-mode #battle-team2-row { bottom: 0; align-items: flex-end; padding-bottom: 40px; padding-top: 9vh; }
+    .battle-mode .start-btn,
+    .battle-mode .add-card,
+    .battle-mode .remove-btn,
+    .battle-mode .team-label,
+    .battle-mode .container {
+      display: none !important;
+    }
+    #alertBox button:active {
+      background: #e4c78e;
+    }
+    @media (max-width: 1100px) {
+      .battle-mode .battle-team-row { gap: 4px; }
+      .battle-mode .battle-img { max-width: 34vw; max-height: 26vh; min-width: 110px; min-height: 110px;}
+    }
+    @media (max-width: 600px) {
+      .battle-mode .battle-img { max-width: 98vw; max-height: 28vh; min-width: 60px; min-height: 60px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Background Button & Input -->
+  <button class="custom-bg-btn" id="customBgBtn" title="Custom Arka Plan">🖼️</button>
+  <input type="file" id="customBgInput" accept="image/*" style="display:none">
+  <!-- Ayarlar (çark) -->
+  <button class="settings-btn" id="settingsBtn" title="Ayarlar ⚙️">⚙️</button>
+  <div class="settings-panel" id="settingsPanel">
+    <button class="close-btn" onclick="closeSettings()">&times;</button>
+    <label>
+      Arka Plan Rengi<br>
+      <input type="color" id="bgColorInput" value="#1e221e"
+        onchange="changeBgColor(this.value)">
+    </label>
+    <label class="slider-label" for="volumeSlider">Ses Seviyesi
+      <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+    </label>
+  </div>
+  <div class="container" id="main-container">
+    <button class="start-btn" onclick="startBattle()" id="startBtn">SAVAŞI BAŞLAT</button>
+    <div class="team-label">Takım 1</div>
+    <div class="team-row" id="team1">
+      <label class="add-card">
+        +
+        <input type="file" accept="image/*" onchange="handleFile(this, 'team1')">
+      </label>
+    </div>
+    <div class="team-label">Takım 2</div>
+    <div class="team-row" id="team2">
+      <label class="add-card">
+        +
+        <input type="file" accept="image/*" onchange="handleFile(this, 'team2')">
+      </label>
+    </div>
+  </div>
+  <!-- UYARI KUTUSU -->
+  <div id="alertBox" style="display:none; position:fixed; left:50%; top:18%; transform:translate(-50%,0); background:#332610; color:#ffe3b6; border:2px solid #ceb179; border-radius:18px; box-shadow:0 0 26px #000c; z-index:1001; min-width:280px; max-width:92vw; padding:28px 36px 22px 36px; text-align:center; font-size:1.19em;">
+    <span id="alertText"></span>
+    <br>
+    <button onclick="closeAlert()" style="margin-top:18px; font-family:'Cinzel',serif; font-size:1em; background:#ceb179; color:#322510; border-radius:8px; border:none; padding:6px 30px; cursor:pointer;">Tamam</button>
+  </div>
+  <!-- Savaş Modu Takım Sıraları -->
+  <div id="battle-team1-row" class="battle-team-row" style="display:none"></div>
+  <div id="battle-team2-row" class="battle-team-row" style="display:none"></div>
+  <button class="end-btn" onclick="endBattle()" id="endBtn" title="Savaşı Bitir"><span>✖</span></button>
+  <!-- Ses Efektleri -->
+  <audio id="hitSound" src="hitSound.mp3" preload="auto"></audio>
+  <audio id="selectSound" src="selectSound.mp3" preload="auto"></audio>
+  <audio id="deselectSound" src="deselectSound.mp3" preload="auto"></audio>
+  <script>
+    let team1Cards = [];
+    let team2Cards = [];
+    let currentBgColor = "#1e221e";
+    let selectedCard = null;
+    let selectedTeam = null;
+    let prevTopCard = null;
+    let justHit = false;
+
+    let globalVolume = 1.0;
+
+    function setAllAudioVolume(vol) {
+      ['hitSound','selectSound','deselectSound'].forEach(id => {
+        const snd = document.getElementById(id);
+        if (snd) snd.volume = vol;
+      });
+    }
+
+    function playSound(id) {
+      const snd = document.getElementById(id);
+      if (snd) {
+        snd.currentTime = 0;
+        snd.play();
+      }
+    }
+
+    function updateBattleRowZIndex() {
+      if (!document.body.classList.contains('battle-mode')) return;
+      const t1 = document.getElementById('battle-team1-row');
+      const t2 = document.getElementById('battle-team2-row');
+      t1.style.zIndex = "100";
+      t2.style.zIndex = "100";
+      if (selectedTeam === "team1") {
+        t1.style.zIndex = "101";
+        t2.style.zIndex = "100";
+      }
+      if (selectedTeam === "team2") {
+        t2.style.zIndex = "101";
+        t1.style.zIndex = "100";
+      }
+    }
+
+    function handleFile(input, teamId) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new window.Image();
+        img.onload = function() {
+          addCard(teamId, e.target.result, file.name || '', img.naturalWidth, img.naturalHeight);
+          saveCardState();
+        };
+        img.src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+      input.value = '';
+    }
+
+    function addCard(teamId, imgSrc, imgName, width, height) {
+      const teamRow = document.getElementById(teamId);
+      const card = document.createElement('div');
+      card.className = 'img-card';
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = imgName || "karakter";
+      img.style.width = "auto";
+      img.style.height = "auto";
+      img.style.maxWidth = "270px";
+      img.style.maxHeight = "270px";
+      img.style.minWidth = "130px";
+      img.style.minHeight = "130px";
+      img.style.objectFit = "contain";
+      img.dataset.width = width;
+      img.dataset.height = height;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.innerHTML = '×';
+      removeBtn.title = "Kartı Kaldır";
+      removeBtn.onclick = () => {
+        teamRow.removeChild(card);
+        saveCardState();
+      };
+
+      card.appendChild(removeBtn);
+      card.appendChild(img);
+
+      const addCardBtn = teamRow.querySelector('.add-card');
+      teamRow.insertBefore(card, addCardBtn);
+    }
+
+    function saveCardState() {
+      team1Cards = Array.from(document.getElementById('team1').querySelectorAll('.img-card img'))
+        .map(img => ({
+          src: img.src,
+          name: img.alt,
+          width: img.dataset.width ? parseInt(img.dataset.width) : img.naturalWidth,
+          height: img.dataset.height ? parseInt(img.dataset.height) : img.naturalHeight
+        }));
+      team2Cards = Array.from(document.getElementById('team2').querySelectorAll('.img-card img'))
+        .map(img => ({
+          src: img.src,
+          name: img.alt,
+          width: img.dataset.width ? parseInt(img.dataset.width) : img.naturalWidth,
+          height: img.dataset.height ? parseInt(img.dataset.height) : img.naturalHeight
+        }));
+    }
+
+    function loadCardState() {
+      ['team1', 'team2'].forEach((teamId, idx) => {
+        const teamRow = document.getElementById(teamId);
+        Array.from(teamRow.querySelectorAll('.img-card')).forEach(card => teamRow.removeChild(card));
+        let state = idx === 0 ? team1Cards : team2Cards;
+        state.forEach(cardObj => {
+          addCard(teamId, cardObj.src, cardObj.name, cardObj.width, cardObj.height);
+        });
+      });
+    }
+
+    // --- UYARI KUTUSU FONKSİYONLARI ---
+    function showAlert(msg) {
+      document.getElementById('alertText').innerText = msg;
+      document.getElementById('alertBox').style.display = 'block';
+    }
+    function closeAlert() {
+      document.getElementById('alertBox').style.display = 'none';
+    }
+    // --- SAVAŞ BAŞLATMA FONKSİYONU KONTROLLÜ ---
+    function startBattle() {
+      saveCardState();
+      if (team1Cards.length === 0 || team2Cards.length === 0) {
+        showAlert("Savaş başlatmak için her iki takıma da en az birer karakter görseli yüklemelisiniz.");
+        return;
+      }
+      document.body.classList.add('battle-mode');
+      renderBattleRows();
+      updateBattleRowZIndex();
+      document.getElementById('endBtn').style.display = 'flex';
+    }
+
+    function endBattle() {
+      document.body.classList.remove('battle-mode');
+      loadCardState();
+      document.getElementById('battle-team1-row').style.display = 'none';
+      document.getElementById('battle-team2-row').style.display = 'none';
+      selectedCard = null;
+      selectedTeam = null;
+      prevTopCard = null;
+      updateBattleRowZIndex();
+      document.getElementById('endBtn').style.display = 'none';
+    }
+
+    function renderBattleRows() {
+      const t1row = document.getElementById('battle-team1-row');
+      t1row.innerHTML = '';
+      t1row.style.display = 'flex';
+      team1Cards.forEach((cardObj, idx) => {
+        const img = document.createElement('img');
+        img.className = 'battle-img';
+        img.src = cardObj.src;
+        img.alt = cardObj.name || "karakter";
+        img.dataset.team = 'team1';
+        img.dataset.idx = idx;
+        img.style.width = "auto";
+        img.style.height = "auto";
+        img.style.objectFit = "contain";
+        img.style.maxWidth = "340px";
+        img.style.maxHeight = "340px";
+        img.style.minWidth = "190px";
+        img.style.minHeight = "190px";
+        img.addEventListener('click', function () {
+          handleCardClick(img, 'team1');
+        });
+        t1row.appendChild(img);
+      });
+      const t2row = document.getElementById('battle-team2-row');
+      t2row.innerHTML = '';
+      t2row.style.display = 'flex';
+      team2Cards.forEach((cardObj, idx) => {
+        const img = document.createElement('img');
+        img.className = 'battle-img';
+        img.src = cardObj.src;
+        img.alt = cardObj.name || "karakter";
+        img.dataset.team = 'team2';
+        img.dataset.idx = idx;
+        img.style.width = "auto";
+        img.style.height = "auto";
+        img.style.objectFit = "contain";
+        img.style.maxWidth = "340px";
+        img.style.maxHeight = "340px";
+        img.style.minWidth = "190px";
+        img.style.minHeight = "190px";
+        img.addEventListener('click', function () {
+          handleCardClick(img, 'team2');
+        });
+        t2row.appendChild(img);
+      });
+      updateBattleRowZIndex();
+    }
+
+    function handleCardClick(img, team) {
+      if (prevTopCard && prevTopCard !== img) prevTopCard.style.zIndex = "";
+
+      if (!selectedCard) {
+        Array.from(document.querySelectorAll('.battle-img')).forEach(el => el.classList.remove('selected'));
+        img.classList.add('selected');
+        selectedCard = img;
+        selectedTeam = team;
+        img.style.zIndex = "21";
+        prevTopCard = img;
+        justHit = false;
+        playSound('selectSound');
+        updateBattleRowZIndex();
+      } else if (selectedCard === img) {
+        img.classList.remove('selected');
+        selectedCard = null;
+        selectedTeam = null;
+        img.style.zIndex = "";
+        prevTopCard = null;
+        if (!justHit) playSound('deselectSound');
+        justHit = false;
+        updateBattleRowZIndex();
+      } else if (selectedTeam !== team) {
+        const attacker = selectedCard;
+        const defender = img;
+        const attackerRect = attacker.getBoundingClientRect();
+        const defenderRect = defender.getBoundingClientRect();
+        const tx = defenderRect.left + defenderRect.width / 2 - (attackerRect.left + attackerRect.width / 2);
+        const ty = defenderRect.top + defenderRect.height / 2 - (attackerRect.top + attackerRect.height / 2);
+        attacker.style.zIndex = "21";
+        defender.style.zIndex = "15";
+        attacker.style.setProperty('--tx', tx + 'px');
+        attacker.style.setProperty('--ty', ty + 'px');
+        attacker.style.animation = "attackMoveFast 0.16s cubic-bezier(.8,1.5,.5,1) forwards";
+        defender.classList.add('hit');
+        playSound('hitSound');
+        justHit = true;
+        setAllAudioVolume(globalVolume);
+
+        setTimeout(() => {
+          attacker.style.animation = "attackMoveBack 0.32s cubic-bezier(.4,1,.3,1) forwards";
+          setTimeout(() => {
+            attacker.style.animation = "";
+            attacker.style.removeProperty('--tx');
+            attacker.style.removeProperty('--ty');
+            defender.classList.remove('hit');
+            defender.style.zIndex = "";
+            Array.from(document.querySelectorAll('.battle-img')).forEach(el => el.classList.remove('selected'));
+            selectedCard = null;
+            selectedTeam = null;
+            justHit = false;
+            updateBattleRowZIndex();
+          }, 320);
+        }, 160);
+        prevTopCard = attacker;
+      } else {
+        Array.from(document.querySelectorAll('.battle-img')).forEach(el => {
+          el.classList.remove('selected');
+          el.style.zIndex = "";
+        });
+        img.classList.add('selected');
+        img.style.zIndex = "21";
+        selectedCard = img;
+        selectedTeam = team;
+        prevTopCard = img;
+        playSound('selectSound');
+        updateBattleRowZIndex();
+      }
+      setAllAudioVolume(globalVolume);
+    }
+
+    document.getElementById('volumeSlider').addEventListener('input', function() {
+      globalVolume = parseFloat(this.value);
+      setAllAudioVolume(globalVolume);
+    });
+
+    document.getElementById('customBgBtn').onclick = function () {
+      if (!document.body.classList.contains('battle-mode')) {
+        document.getElementById('customBgInput').click();
+      }
+    };
+    document.getElementById('customBgInput').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        document.body.style.backgroundImage = `url('${evt.target.result}')`;
+      };
+      reader.readAsDataURL(file);
+      this.value = "";
+    });
+
+    document.getElementById('settingsBtn').onclick = function() {
+      const panel = document.getElementById('settingsPanel');
+      panel.classList.toggle('active');
+    }
+    function closeSettings() {
+      document.getElementById('settingsPanel').classList.remove('active');
+    }
+
+    function changeBgColor(color) {
+      document.documentElement.style.setProperty('--bg-color', color);
+      currentBgColor = color;
+      document.body.style.backgroundImage = '';
+    }
+
+    document.getElementById('bgColorInput').addEventListener('input', function() {
+      changeBgColor(this.value);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setAllAudioVolume(globalVolume);
+      saveCardState();
+      document.getElementById('endBtn').style.display = 'none';
+    });
+
+  </script>
+</body>
+</html>

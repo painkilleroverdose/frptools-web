@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Zar Atma Sistemi - Tüm Animasyonlar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #00FF00;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Roboto', Arial, sans-serif;
+      box-sizing: border-box;
+      overflow: hidden;
+      transition: background 1.2s cubic-bezier(.68,0,.32,1);
+    }
+    .custom-bar {
+      position: fixed; top: 32px; left: 32px; z-index: 100;
+      background: rgba(25,22,35,0.95);
+      border: 2.5px solid #bca356; border-radius: 16px;
+      padding: 14px 28px 12px 22px;
+      box-shadow: 0 0 16px #0009, 0 1px 22px #2e222680;
+      display: flex; flex-direction: column; gap: 8px; align-items: flex-start;
+      backdrop-filter: blur(2px);
+      min-width: 175px;
+    }
+    .custom-bar label {
+      font-weight: 500; color: #ecdcb0; font-size: 1.04rem; letter-spacing: .4px; margin-right: 4px;
+    }
+    .custom-bar input[type=number] {
+      width: 54px; font-size: 1em; border-radius: 7px; border: 1.5px solid #bca356;
+      background: #161618; color: #ffd; text-align: center; margin-left: 4px; padding: 3px 7px;
+    }
+    #dice-result-top {
+      font-size: 1.09rem;
+      color: #ffe9b0;
+      margin-top: 2px;
+      min-height: 1.7em;
+      text-align: left;
+      font-family: 'Roboto', Arial, sans-serif;
+      letter-spacing: .1em;
+      width: 100%;
+      user-select: none;
+    }
+
+    .dice-container {
+      background: rgba(30,28,44,0.96);
+      border: 3.5px solid #bca356; border-radius: 0px;
+      box-shadow: 0 0 44px 10px #1a1a24;
+      width: 380px;
+      height: 670px;
+      display: flex; flex-direction: column; align-items: center; position: relative; overflow: visible;
+      justify-content: center;
+      padding: 0;
+    }
+    .dice-content-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      flex: 1;
+    }
+    .frame-corner {
+      position: absolute; width: 54px; height: 54px; border: 5px solid #bca356; border-radius: 18px; pointer-events: none;
+    }
+    .frame-tl { top: 0; left: 0; border-bottom: none; border-right: none; }
+    .frame-tr { top: 0; right: 0; border-bottom: none; border-left: none; }
+    .frame-bl { bottom: 0; left: 0; border-top: none; border-right: none; }
+    .frame-br { bottom: 0; right: 0; border-top: none; border-left: none; }
+
+    .difficulty-label {
+      font-family: 'Cinzel', serif;
+      font-size: 2.0rem;
+      color: #ecdcb0;
+      letter-spacing: 2.5px;
+      text-align: center;
+      margin-bottom: 0.28em;
+      text-shadow: 0 0 9px #bca35644, 0 2px 15px #0006;
+      transition: font-size .3s;
+    }
+    .difficulty-class {
+      font-family: 'Cinzel', serif; font-size: 2.2rem; color: #fff9e0; text-shadow: 0 2px 10px #bca35690;
+      margin-bottom: 18px; text-align: center; display: inline-block; background: none; box-shadow: none; opacity: 1;
+      position: relative; z-index: 5; pointer-events: none;
+      transition: color .5s, background .4s, transform .4s cubic-bezier(.46,1.4,.53,1.05), text-shadow .35s cubic-bezier(.51,1.5,.25,1), opacity .35s cubic-bezier(.5,1.5,.36,1.07);
+      will-change: color, background, transform, text-shadow, opacity;
+    }
+    .difficulty-class.fade-in { opacity: 1 !important; transition: opacity .35s cubic-bezier(.5,1.5,.36,1.07);}
+    .difficulty-class.fade-out { opacity: 0 !important; transition: opacity .32s cubic-bezier(.7,1.4,.4,1.12);}
+    .difficulty-class.success {
+      color: #30ff90; transform: scale(1.1);
+      text-shadow: 0 0 8px #4aff8f, 0 0 24px #4aff8f, 0 0 42px #29ff84, 0 0 64px #17d458;
+      transition: color .4s, background .22s, transform .25s cubic-bezier(.62,1.7,.2,1), text-shadow .4s cubic-bezier(.51,1.5,.25,1);
+    }
+    .difficulty-class.failure {
+      color: #ff5050; transform: scale(1.1);
+      text-shadow: 0 0 8px #ff2222, 0 0 24px #ff2222, 0 0 42px #e6001e, 0 0 64px #b90022;
+      transition: color .4s, background .22s, transform .25s cubic-bezier(.62,1.7,.2,1), text-shadow .4s cubic-bezier(.51,1.5,.25,1);
+    }
+    .difficulty-class.carpisma {
+      transition: transform .5s cubic-bezier(.7,1.6,.5,1.1), color .3s, opacity .52s, text-shadow .32s cubic-bezier(.4,1.2,.3,1);
+      pointer-events: none; will-change: transform, opacity, text-shadow; opacity: 1;
+    }
+    .difficulty-class.carpisma-fadeout {
+      animation: diff-fadeout 0.4s forwards cubic-bezier(.36,1.1,.55,1.1);
+      opacity: 0;
+    }
+    @keyframes diff-fadeout {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+    .difficulty-class.carpisma-fade { opacity: 0; transition: opacity .52s cubic-bezier(.55,1.2,.44,1.13);}
+    @keyframes down-bounce {
+      0%   { transform: translateY(0);}
+      40%  { transform: translateY(32px);}
+      100% { transform: translateY(0);}
+    }
+    .difficulty-class.failure.bounce-down { animation: down-bounce 0.8s cubic-bezier(.43,1.3,.58,1.1);}
+    .difficulty-class.smooth-back { transition: transform .34s cubic-bezier(.36,1.6,.39,1.05);}
+    .dice-area {
+      margin: 0 0 22px 0; display: flex; flex-direction: column; align-items: center;
+      min-height: 150px; min-width: 150px; position: relative; justify-content: center; overflow: visible;
+    }
+    .dice-anim-box {
+      width: 110px; height: 110px; display: flex; align-items: center; justify-content: center;
+      position: relative; margin: 0 auto; z-index: 10;
+      transition: box-shadow .25s, filter .5s cubic-bezier(.45,1.4,.41,1.08);
+      will-change: transform, filter; cursor: pointer;
+      pointer-events: auto;
+    }
+    .dice-anim-box.glow { filter: drop-shadow(0 0 56px #67fef8cc);}
+    .dice-anim-box.glow-fail {
+      filter: drop-shadow(0 0 48px #ff2233cc) drop-shadow(0 0 74px #b80013cc);
+      transition: filter .72s cubic-bezier(.47,1.48,.33,1.09);
+    }
+    .dice-anim-box.green-glow {
+      filter: drop-shadow(0 0 44px #4aff8fcc) drop-shadow(0 0 60px #16fc67bb);
+      transition: filter .25s cubic-bezier(.3,1.3,.38,1.05);
+    }
+    .dice-anim-box.crash-glow {
+      filter: drop-shadow(0 0 64px #3aff6fcc) drop-shadow(0 0 90px #17ff4fbb) brightness(1.23);
+      transition: filter .35s cubic-bezier(.34,1.2,.48,1.11);
+    }
+    .dice-img {
+      width: 110px; height: 110px; object-fit: contain; display: block; user-select: none; pointer-events: none;
+      background: transparent; border-radius: 0; border: none;
+      filter: drop-shadow(0 0 16px #50e5ff88) drop-shadow(0 0 44px #41a7f777);
+      transition: filter .24s; z-index: 10; position: relative;
+    }
+    .dice-img.success-bounce {
+      animation: dice-bounce-grow 0.3s cubic-bezier(.39,1.7,.37,1.08) forwards;
+      z-index: 15;
+    }
+    @keyframes dice-bounce-grow {
+      0%   { transform: scale(1);}
+      65%  { transform: scale(1.26);}
+      100% { transform: scale(1);}
+    }
+    .dice-img.crash-grow {
+      animation: crash-grow 0.45s cubic-bezier(.46,1.6,.36,1.04) forwards;
+      z-index: 16;
+    }
+    @keyframes crash-grow {
+      0%   { transform: scale(1);}
+      100% { transform: scale(1.34);}
+    }
+    .dice-img.crash-shrink {
+      animation: crash-shrink 0.14s cubic-bezier(.82,0,.41,1.36) forwards;
+      z-index: 16;
+    }
+    @keyframes crash-shrink {
+      0%   { transform: scale(1.34);}
+      60%  { transform: scale(0.83);}
+      100% { transform: scale(1);}
+    }
+    .dice-glow { filter: drop-shadow(0 0 34px #70ffe7cc) drop-shadow(0 0 52px #41a7f7cc) brightness(1.17);}
+    @keyframes shake {
+      0% { transform: translate(0,0) rotate(0deg) scale(1);}
+      8% { transform: translate(-4px, 0) rotate(-1.5deg) scale(1.06);}
+      16% { transform: translate(4px, 0) rotate(2deg) scale(1.13);}
+      24% { transform: translate(-3px, 2px) rotate(-2deg) scale(1.18);}
+      32% { transform: translate(2px, -3px) rotate(2deg) scale(1.23);}
+      40% { transform: translate(-2px, 3px) rotate(-2deg) scale(1.25);}
+      48% { transform: translate(4px, 1px) rotate(2deg) scale(1.29);}
+      56% { transform: translate(-3px, -2px) rotate(-2deg) scale(1.33);}
+      64% { transform: translate(2px, 3px) rotate(2deg) scale(1.40);}
+      72% { transform: translate(-2px, -1px) rotate(-1deg) scale(1.47);}
+      80% { transform: translate(0, 0) rotate(0deg) scale(1.50);}
+      100% { transform: translate(0,0) rotate(0deg) scale(2);}
+    }
+    .dice-shake {
+      animation: shake 1s cubic-bezier(.35,1.4,.46,1.05) forwards;
+      filter: drop-shadow(0 0 62px #fe3030cc) drop-shadow(0 0 110px #ff1e1ecc);
+      z-index: 12; transition: filter .32s cubic-bezier(.65,1.3,.39,1.05);
+    }
+    @keyframes dice-shrink {
+      from { transform: scale(2);}
+      to { transform: scale(1);}
+    }
+    .dice-shrink { animation: dice-shrink .4s cubic-bezier(.47,1.62,.44,1) forwards;}
+    .roll-btn { display: none; }
+
+    /* AYARLAR BUTONU & PANEL */
+    .settings-btn {
+      position: fixed; top: 32px; right: 34px; z-index: 150;
+      background: rgba(33,28,38,0.95);
+      border: 2.5px solid #bca356;
+      border-radius: 15px;
+      padding: 8px 12px 7px 12px;
+      box-shadow: 0 0 18px #0008, 0 1px 24px #2e222655;
+      color: #ecdcb0;
+      font-size: 1.45rem;
+      cursor: pointer;
+      transition: background .16s, color .17s, border .18s;
+      outline: none;
+      display: flex; align-items: center; gap: 8px;
+      backdrop-filter: blur(1.5px);
+    }
+    .settings-btn:hover {
+      background: #bca356;
+      color: #221b22;
+      border-color: #ffe9b0;
+    }
+    .settings-panel {
+      position: fixed; top: 72px; right: 38px; z-index: 200;
+      background: rgba(33,28,38,0.99);
+      border: 2.5px solid #bca356;
+      border-radius: 19px;
+      padding: 10px 14px 9px 14px;
+      box-shadow: 0 0 32px #000a, 0 1px 28px #2e222655;
+      color: #ffe9b0;
+      min-width: 170px; max-width: 240px;
+      display: none;
+      flex-direction: column;
+      gap: 11px;
+      font-size: 1.07rem;
+      animation: fadeIn .18s;
+    }
+    .settings-panel label {
+      color: #ecdcb0;
+      font-size: 0.97rem;
+      letter-spacing: .16em;
+      margin-bottom: 3px;
+      display: block;
+    }
+    .settings-panel input[type="color"] {
+      width: 36px; height: 26px; border-radius: 8px; border: 1.5px solid #bca356;
+      background: #151518;
+      margin-left: 7px;
+      cursor: pointer;
+    }
+    .settings-panel input[type="file"] {
+      margin-top: 6px;
+      color: #ffe9b0;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-12px);}
+      to   { opacity: 1; transform: none;}
+    }
+    .settings-close-btn {
+      position: absolute; top: 6px; right: 10px; font-size: 1.2rem; background: none; border: none; color: #ffe9b0; cursor: pointer;
+    }
+    .settings-close-btn:hover { color: #ff6464; }
+    #result-badge {
+      position: absolute;
+      left: 50%; bottom: 38px;
+      transform: translateX(-50%);
+      min-width: 180px;
+      min-height: 42px;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 2.1rem;
+      font-weight: bold;
+      letter-spacing: .04em;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+      filter: blur(3px);
+      transition: none;
+    }
+    #result-badge.visible {
+      animation: badge-pop 0.7s cubic-bezier(.49,1.7,.29,.99), badge-stay 1.3s linear 0.7s, badge-fade 0.5s cubic-bezier(.6,0,.49,1) 2s;
+      animation-fill-mode: forwards;
+    }
+    @keyframes badge-pop {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.4);}
+      60% { opacity: 1; transform: translateX(-50%) scale(1.2);}
+      90% { opacity: 1; transform: translateX(-50%) scale(0.98);}
+      100% { opacity: 1; transform: translateX(-50%) scale(1);}
+    }
+    @keyframes badge-stay {
+      from { opacity: 1; }
+      to   { opacity: 1; }
+    }
+    @keyframes badge-fade {
+      from { opacity: 1; filter: blur(0px);}
+      to   { opacity: 0; filter: blur(5px);}
+    }
+    #result-badge.success { color: #3fff90; text-shadow: 0 0 24px #4aff8fa0, 0 0 60px #32ff838a, 0 1px 16px #3ae676; filter: blur(0px) drop-shadow(0 0 20px #29ff70) brightness(1.07);}
+    #result-badge.failure { color: #ff5151; text-shadow: 0 0 24px #ff4040a8, 0 0 60px #ff2a2a95, 0 1px 16px #e2001c; filter: blur(0px) drop-shadow(0 0 20px #ff2929) brightness(1.07);}
+  </style>
+</head>
+<body>
+  <div class="custom-bar">
+    <label>
+      Zorluk:
+      <input id="difficulty-input" type="number" min="1" max="100" value="20">
+    </label>
+    <div id="dice-result-top"></div>
+  </div>
+  <button class="settings-btn" id="settings-btn" title="Ayarlar">
+    <svg height="23" width="23" viewBox="0 0 24 24" style="vertical-align: middle;"><path fill="currentColor" d="M12,15.5A3.5,3.5 0 1,0 8.5,12A3.5,3.5 0 0,0 12,15.5M19.43,12.97C19.5,12.66 19.5,12.34 19.5,12C19.5,11.66 19.5,11.34 19.43,11.03L21.54,9.47C21.74,9.33 21.79,9.05 21.66,8.82L19.66,5.18C19.53,4.95 19.26,4.87 19.03,4.96L16.56,5.87C16.04,5.5 15.5,5.2 14.89,4.97L14.5,2.34C14.47,2.13 14.31,2 14.1,2H9.9C9.69,2 9.53,2.13 9.5,2.34L9.11,4.97C8.5,5.2 7.96,5.5 7.44,5.87L4.97,4.96C4.74,4.87 4.47,4.95 4.34,5.18L2.34,8.82C2.21,9.05 2.26,9.33 2.46,9.47L4.57,11.03C4.5,11.34 4.5,11.66 4.5,12C4.5,12.34 4.5,12.66 4.57,12.97L2.46,14.53C2.26,14.67 2.21,14.95 2.34,15.18L4.34,18.82C4.47,19.05 4.74,19.13 4.97,19.04L7.44,18.13C7.96,18.5 8.5,18.8 9.11,19.03L9.5,21.66C9.53,21.87 9.69,22 9.9,22H14.1C14.31,22 14.47,21.87 14.5,21.66L14.89,19.03C15.5,18.8 16.04,18.5 16.56,18.13L19.03,19.04C19.26,19.13 19.53,19.05 19.66,18.82L21.66,15.18C21.79,14.95 21.74,14.67 21.54,14.53L19.43,12.97Z" /></svg>
+    Ayarlar
+  </button>
+  <div class="settings-panel" id="settings-panel">
+    <button class="settings-close-btn" id="settings-close-btn" title="Kapat">&times;</button>
+    <label>Arka Plan Rengi:
+      <input type="color" id="bg-color-picker" value="#00ff00">
+    </label>
+    <label style="margin-top:8px;">Veya Arka Plan Görseli:
+      <input type="file" id="bg-image-picker" accept="image/*">
+    </label>
+    <small style="color:#ffe9b088;font-size:.96em;display:block;margin-top:5px;">Seçilen görsel veya renk canlı olarak uygulanır.</small>
+    <button onclick="resetBg()" style="margin-top:10px;background:#2b223a;border:1.5px solid #bca356;border-radius:7px;padding:5px 12px;color:#ffe9b0;font-size:.97em;cursor:pointer;">Sıfırla</button>
+  </div>
+
+  <div class="dice-container">
+    <div class="frame-corner frame-tl"></div>
+    <div class="frame-corner frame-tr"></div>
+    <div class="frame-corner frame-bl"></div>
+    <div class="frame-corner frame-br"></div>
+    <div class="dice-content-group">
+      <div class="difficulty-label">ZORLUK SEVİYESİ</div>
+      <div class="difficulty-class" id="difficulty-value">20</div>
+      <div class="dice-area">
+        <div class="dice-anim-box" id="dice-anim-box" title="Zarı atmak için tıkla">
+          <img id="dice-img" class="dice-img" src="1.png" alt="Zar">
+        </div>
+      </div>
+    </div>
+    <div id="result-badge"></div>
+    <audio id="dice-success" src="diceSuccess.mp3" preload="auto"></audio>
+    <audio id="dice-fail" src="diceFail.mp3" preload="auto"></audio>
+  </div>
+  <script>
+    const diceImg = document.getElementById('dice-img');
+    const difficultyInput = document.getElementById('difficulty-input');
+    const difficultyValue = document.getElementById('difficulty-value');
+    const diceAnimBox = document.getElementById('dice-anim-box');
+    const diceSuccess = document.getElementById('dice-success');
+    const diceFail = document.getElementById('dice-fail');
+    const diceResultTop = document.getElementById('dice-result-top');
+    const resultBadge = document.getElementById('result-badge');
+    const currentSides = 20;
+
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsPanel = document.getElementById('settings-panel');
+    const settingsCloseBtn = document.getElementById('settings-close-btn');
+    const bgColorPicker = document.getElementById('bg-color-picker');
+    const bgImagePicker = document.getElementById('bg-image-picker');
+
+    let zarAtiliyor = false;
+
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const randomNearby = (min, max) => Math.random() * (max - min) + min;
+    const resetDifficultyState = () => {
+      difficultyValue.className = "difficulty-class";
+      difficultyValue.style.cssText = '';
+    };
+
+    function showBadge(text, type) {
+      resultBadge.className = '';
+      resultBadge.style.opacity = '0';
+      void resultBadge.offsetWidth; // Animasyonu resetle
+      resultBadge.textContent = text;
+      resultBadge.classList.add('visible');
+      if (type === "success") resultBadge.classList.add('success');
+      else if (type === "failure") resultBadge.classList.add('failure');
+      setTimeout(() => {
+        resultBadge.classList.remove('visible', 'success', 'failure');
+        resultBadge.style.opacity = '0';
+      }, 2500);
+    }
+
+    difficultyInput.addEventListener('input', () => {
+      let val = clamp(parseInt(difficultyInput.value) || 1, 1, 100);
+      difficultyInput.value = val;
+      difficultyValue.textContent = val;
+      resetDifficultyState();
+      diceResultTop.textContent = "";
+    });
+
+    diceAnimBox.addEventListener('click', () => {
+      if (zarAtiliyor) return;
+      zarAtiliyor = true;
+      resetDifficultyState();
+      diceImg.src = 'diceRolling.gif';
+      diceImg.classList.add("dice-glow");
+      diceAnimBox.classList.add("glow");
+
+      const face = Math.floor(Math.random() * currentSides) + 1;
+      const zorluk = parseInt(difficultyInput.value);
+      const success = face > zorluk;
+      try {
+        (success ? diceSuccess : diceFail).currentTime = 0;
+        (success ? diceSuccess : diceFail).play();
+      } catch (e) {}
+
+      const duration = 2000, interval = 110, totalJumps = Math.floor(duration / interval);
+      let jump = 0;
+
+      difficultyValue.classList.remove("fade-out", "fade-in");
+      difficultyValue.style.opacity = 1;
+
+      function animateJump() {
+        diceAnimBox.style.transition = "transform 0.12s cubic-bezier(.7,2,.4,.9)";
+        diceAnimBox.style.transform = `translate(${randomNearby(-48, 48)}px,${randomNearby(-32, 32)}px) rotate(${randomNearby(0, 360)}deg) scale(1.08)`;
+        if (++jump < totalJumps) setTimeout(animateJump, interval);
+        else setTimeout(() => {
+          diceAnimBox.style.transition = "transform 0.19s cubic-bezier(.15,1.2,.5,1)";
+          diceAnimBox.style.transform = `translate(0,0) rotate(0deg) scale(1)`;
+          setTimeout(() => showResult(success, face, zorluk), 210);
+        }, 120);
+      }
+
+      animateJump();
+    });
+
+    function showResult(success, face, zorluk) {
+      diceImg.src = face + ".png";
+      diceResultTop.textContent = "Zar Sonucu: " + face;
+
+      if (success) {
+        setTimeout(() => {
+          showBadge("Başarılı!", "success");
+        }, 3000);
+
+        diceAnimBox.classList.add("green-glow");
+        diceImg.classList.remove("success-bounce");
+        void diceImg.offsetWidth;
+        diceImg.classList.add("success-bounce");
+        setTimeout(() => {
+          diceImg.classList.remove("success-bounce");
+        }, 350);
+
+        setTimeout(() => {
+          const zarRect = diceImg.getBoundingClientRect();
+          const zorRect = difficultyValue.getBoundingClientRect();
+          const dx = (zarRect.left + zarRect.width/2) - (zorRect.left + zorRect.width/2);
+          const dy = (zarRect.top + zarRect.height/2) - (zorRect.top + zorRect.height/2);
+
+          difficultyValue.classList.add("carpisma");
+          difficultyValue.style.transform = `translate(${dx}px,${dy}px) scale(0.6)`;
+          difficultyValue.style.zIndex = 15;
+
+          setTimeout(() => {
+            difficultyValue.classList.add("carpisma-fadeout");
+            setTimeout(() => {
+              difficultyValue.style.transition = "none";
+              difficultyValue.className = "difficulty-class";
+              difficultyValue.textContent = zorluk;
+              difficultyValue.style.transform = "";
+              difficultyValue.style.zIndex = "";
+              difficultyValue.style.opacity = "0";
+              void difficultyValue.offsetWidth;
+              setTimeout(() => {
+                difficultyValue.style.transition = "opacity 0.35s cubic-bezier(.5,1.5,.36,1.07)";
+                difficultyValue.style.opacity = "1";
+                setTimeout(() => {
+                  difficultyValue.style.transition = "";
+                }, 400);
+                zarAtiliyor = false;
+                diceAnimBox.classList.remove("green-glow");
+              }, 1500);
+            }, 400);
+          }, 500);
+        }, 1000);
+
+        setTimeout(() => {
+          diceImg.classList.remove("crash-grow", "crash-shrink");
+          diceAnimBox.classList.remove("crash-glow");
+          diceImg.classList.add("crash-grow");
+          diceAnimBox.classList.add("crash-glow");
+          setTimeout(() => {
+            diceImg.classList.remove("crash-grow");
+            diceImg.classList.add("crash-shrink");
+            diceAnimBox.classList.remove("crash-glow");
+            setTimeout(() => {
+              diceImg.classList.remove("crash-shrink");
+            }, 140);
+          }, 450);
+        }, 3500);
+      } else {
+        showBadge("Başarısız...", "failure");
+        setTimeout(() => {
+          difficultyValue.classList.add("failure");
+          setTimeout(() => {
+            difficultyValue.classList.add("bounce-down");
+            setTimeout(() => {
+              let curY = 0;
+              const computed = window.getComputedStyle(difficultyValue).transform;
+              if (computed && computed !== "none") {
+                try {
+                  const matrix = new DOMMatrixReadOnly(computed);
+                  curY = matrix.m42;
+                } catch(e) { curY = 0; }
+              }
+              difficultyValue.classList.remove("bounce-down");
+              difficultyValue.classList.add("smooth-back");
+              difficultyValue.style.transform = `translateY(${curY}px)`;
+              setTimeout(() => { difficultyValue.style.transform = `translateY(0)`; }, 10);
+              setTimeout(() => {
+                difficultyValue.classList.remove("smooth-back");
+                difficultyValue.style.transform = "";
+              }, 350);
+              setTimeout(() => {
+                difficultyValue.classList.add("carpisma");
+                diceAnimBox.classList.remove("glow");
+                diceAnimBox.classList.add("glow-fail");
+                setTimeout(() => {
+                  difficultyValue.classList.add("carpisma-fade");
+                  diceAnimBox.classList.add("dice-shake");
+                  setTimeout(() => {
+                    diceAnimBox.classList.remove("dice-shake");
+                    diceAnimBox.classList.add("dice-shrink");
+                    diceAnimBox.classList.remove("glow-fail");
+                    diceAnimBox.classList.add("glow");
+                    setTimeout(() => {
+                      diceAnimBox.classList.remove("dice-shrink");
+                      diceImg.classList.remove("dice-glow");
+                      diceAnimBox.classList.remove("glow");
+                      difficultyValue.classList.remove("carpisma-fade", "carpisma", "failure");
+                      difficultyValue.classList.add("fade-in");
+                      zarAtiliyor = false;
+                    }, 400);
+                  }, 1000);
+                }, 0);
+              }, 1000);
+            }, 800);
+          }, 300);
+        }, 1600);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      diceImg.src = '1.png';
+      difficultyValue.textContent = difficultyInput.value;
+      diceAnimBox.style.transform = "translate(0,0) rotate(0deg) scale(1)";
+      resetDifficultyState();
+      diceResultTop.textContent = "";
+    });
+
+    settingsBtn.addEventListener('click', () => {
+      settingsPanel.style.display = 'flex';
+    });
+    settingsCloseBtn.addEventListener('click', () => {
+      settingsPanel.style.display = 'none';
+    });
+    bgColorPicker.addEventListener('input', e => {
+      document.body.style.background = e.target.value;
+      document.body.style.backgroundSize = '';
+    });
+    bgImagePicker.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        document.body.style.background = `url('${ev.target.result}') center center/cover no-repeat fixed`;
+        document.body.style.backgroundSize = 'cover';
+      };
+      reader.readAsDataURL(file);
+    });
+    window.resetBg = function() {
+      document.body.style.background = "#00FF00";
+      bgColorPicker.value = "#00ff00";
+      bgImagePicker.value = "";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D&D HP Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-bg: #181825;
+      --card-bg: #24243a;
+      --accent: #ea4c89;
+      --armor: #5bc0eb;
+      --hp-bar: #ff5f57;
+      --hp-bg: #2e2e3a;
+      --turn-glow: #ea4c89;
+      --turn-glow-light: #ea4c8980;
+      --turn-glow-strong: #ea4c89cc;
+      --radius: 1.3em;
+      --duration: 0.5s;
+      --font: 'Roboto', Arial, sans-serif;
+      --hp-bar-green: #43ea4c;
+      --hp-bar-yellow: #f7c948;
+      --hp-bar-red: #ff5f57;
+      --hp-bar-grey: #6c6c7a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--main-bg);
+      color: #f7f7fa;
+      font-family: var(--font);
+      margin: 0; padding: 0;
+      min-height: 100dvh;
+      display: flex; flex-direction: column; align-items: center;
+      transition: background-image .3s;
+    }
+    h1 { letter-spacing: .01em; margin: 1em 0 0.5em; }
+    .top-right-tools {
+      position: fixed;
+      right: 2vw; top: 1.1em; z-index: 111;
+      display: flex; flex-direction: row; gap: 0.4em;
+    }
+    .bg-upload-btn, .settings-btn {
+      background: #23233c;
+      color: #fff;
+      border: 2px solid #343451;
+      border-radius: 1em;
+      padding: 0.35em 1em 0.35em 0.8em;
+      font-size: 1.2em;
+      font-family: var(--font);
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0002, 0 0px 3px #fff5;
+      display: flex; align-items: center; gap: 0.4em;
+      transition: background .2s, color .2s, border .2s;
+    }
+    .bg-upload-btn:hover, .settings-btn:hover {
+      background: #38385a;
+      color: #ea4c89;
+      border-color: #ea4c89;
+    }
+    #bgInput { display:none; }
+    .settings-panel {
+      display: none;
+      position: absolute;
+      right: 0; top: 2.5em;
+      background: #24243a;
+      color: #fff;
+      border-radius: 1.2em;
+      box-shadow: 0 4px 32px #0008;
+      border: 2px solid #39395d;
+      padding: 1.3em 1.1em 1.1em 1.1em;
+      min-width: 230px;
+      z-index: 999;
+      flex-direction: column;
+      gap: 1.2em;
+      font-family: var(--font);
+      font-size: 1.07em;
+      animation: fadeIn .22s;
+    }
+    .settings-panel.active {
+      display: flex;
+    }
+    .settings-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1em;
+      gap: 1em;
+    }
+    .settings-label:last-child { margin-bottom: 0; }
+    .settings-panel input[type="color"] {
+      width: 34px; height: 34px;
+      border: none;
+      border-radius: 9px;
+      background: #22223a;
+      cursor: pointer;
+      margin-left: 0.6em;
+      box-shadow: 0 1px 7px #0002;
+    }
+    .settings-panel input[type="color"]:hover {
+      border: 2px solid #ea4c89;
+    }
+    .settings-panel input[type="range"] {
+      width: 90px;
+      margin-left: 0.7em;
+    }
+    .settings-panel::before {
+      content: "";
+      position: absolute;
+      top: -14px; right: 32px;
+      border-width: 0 10px 14px 10px;
+      border-style: solid;
+      border-color: transparent transparent #24243a transparent;
+    }
+    .settings-volume-value {
+      font-size: 0.98em;
+      margin-left: .5em;
+      min-width: 2.2em;
+      display: inline-block;
+      text-align: right;
+      color: #85e1fa;
+    }
+    .tracker-container {
+      width: 98vw;
+      max-width: 600px;
+      margin: 0 auto 2em;
+      padding: 1em 0.5em;
+    }
+    .turn-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5em;
+      gap: 1em;
+    }
+    .turn-count {
+      background: var(--card-bg);
+      border-radius: 0.7em;
+      padding: 0.25em 1em;
+      font-size: 1.05em;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+      box-shadow: 0 1px 6px #0003;
+      color: #85e1fa;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .reset-turn-btn {
+      background: #39395d;
+      border: none;
+      border-radius: 1em;
+      padding: 0.3em 0.7em;
+      color: #fff;
+      font-size: 1.25em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 0.5em;
+      transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 6px #0002;
+    }
+    .reset-turn-btn:hover { background: #ea4c89; }
+    .add-form {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      display: flex; flex-wrap: wrap;
+      gap: 0.5em 1em;
+      padding: 1em 1.2em;
+      margin-bottom: 1.2em;
+      align-items: flex-end;
+      box-shadow: 0 2px 12px #0004;
+      font-size: 1em;
+    }
+    .add-form input, .add-form button, .add-form select {
+      font-family: var(--font);
+      font-size: 1.08em;
+      border-radius: 0.7em;
+      border: none;
+      outline: none;
+      padding: 0.6em 1em;
+      margin: 0;
+      background: #23233c;
+      color: #fff;
+      box-shadow: 0 1px 3px #0002;
+      transition: background 0.2s;
+      height: 2.7em;
+      min-height: 2.7em;
+    }
+    .add-form input[type="file"] {
+      padding: 0.2em;
+      background: none;
+      color: #eee;
+    }
+    .add-form button {
+      background: var(--accent);
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin-left: auto;
+      padding: 0.6em 1.3em;
+    }
+    .add-form button:hover {
+      background: #cf3476;
+    }
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1em;
+      margin-top: 0.5em;
+    }
+    .char-card {
+      position: relative;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 9px #0005;
+      padding: 1em 1em 0.7em 1em;
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      transition: box-shadow .18s, border .18s;
+      min-height: 88px;
+      overflow: hidden;
+    }
+    .char-card.turn {
+      box-shadow: 0 0 18px 4px var(--turn-glow-light), 0 0 32px 8px var(--turn-glow-strong);
+      border: 2.5px solid var(--turn-glow);
+      animation: turnPulse 1.3s infinite alternate;
+    }
+    @keyframes turnPulse {
+      0% { box-shadow: 0 0 18px 4px var(--turn-glow-light), 0 0 0 0 var(--turn-glow-light);}
+      100% { box-shadow: 0 0 32px 8px var(--turn-glow-strong), 0 0 0 0 var(--turn-glow-strong);}
+    }
+    .char-img {
+      width: 72px; height: 72px;
+      border-radius: 0 !important;
+      object-fit: cover;
+      background: #23233c;
+      flex-shrink: 0;
+      border: 2px solid #373751;
+      box-shadow: 0 2px 8px #0003;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2em; color: #aaa;
+    }
+    .card-main {
+      flex: 1; display: flex; flex-direction: column; gap: 0.2em;
+    }
+    .char-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      position: relative;
+    }
+    .char-name {
+      font-size: 1.2em; font-weight: bold;
+      flex: 1;
+      text-shadow: 0 1px 6px #0005;
+      min-width: 0;
+    }
+    .initiative {
+      background: #111420cc;
+      border-radius: 0.6em;
+      font-size: 0.99em;
+      padding: 0.18em 0.75em;
+      margin-left: 0;
+      margin-right: 0.8em;
+      font-weight: 500;
+      color: var(--turn-glow) !important;
+      border: 1.5px solid var(--turn-glow);
+      letter-spacing: 0.02em;
+      box-shadow: 0 0 6px var(--turn-glow)40;
+      order: -1;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1.3em;
+      margin-top: 0.1em;
+    }
+    .hp-section, .armor-section {
+      display: flex; align-items: center; gap: 0.4em; font-size: 1em;
+      min-width: 65px;
+    }
+    .hp-section span, .armor-section span { font-size: 1.17em; }
+    .hp-bar-ct {
+      flex: 1;
+      min-width: 90px;
+      max-width: 200px;
+      height: 21px;
+      background: var(--hp-bg);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      margin: 0 0.7em 0 0.3em;
+      box-shadow: 0 0 6px #ea4c8924;
+    }
+    .hp-bar {
+      height: 100%;
+      border-radius: 14px 0 0 14px;
+      transition: width var(--duration) cubic-bezier(.52,.14,.48,1.32), background var(--duration);
+      min-width: 4%;
+      max-width: 100%;
+    }
+    .bar-label {
+      position: absolute; left: 9px; top: 0; height: 100%; display: flex; align-items: center;
+      font-size: 1em; color: #fff; font-weight: 500;
+      letter-spacing: 0.01em; text-shadow: 0 1px 3px #0007;
+    }
+    .controls {
+      display: flex; gap: 0.33em; align-items: center;
+    }
+    .controls button {
+      background: #2e2e46;
+      border: none; color: #fff; border-radius: 50%; width: 27px; height: 27px;
+      font-size: 1.15em; cursor: pointer;
+      transition: background 0.19s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 5px #0002;
+    }
+    .controls button:hover { background: #444465; }
+    .delete-btn {
+      position: absolute; right: 0.67em; top: 0.67em;
+      background: #e63946cc; color: #fff;
+      border: none; border-radius: 50%; width: 32px; height: 32px;
+      font-size: 1.25em; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+      box-shadow: 0 2px 12px #e6394644;
+      transition: background .16s;
+    }
+    .delete-btn:hover { background: #a31621; }
+    @media (max-width: 600px) {
+      .tracker-container { max-width: 100vw; padding: 0.5em 0.1em; }
+      .add-form { padding: 0.7em 0.2em; font-size: 0.97em; }
+      .char-card { flex-direction: column; align-items: stretch; padding: 0.8em 0.6em 0.4em 0.6em; min-height: 0; }
+      .char-img { width: 60px; height: 60px; border-radius: 0 !important; }
+      .bar-row { flex-direction: column; gap: 0.2em; align-items: stretch; }
+      .hp-bar-ct { min-width: 80px; max-width: 100%; }
+      .top-right-tools { right: 1vw; }
+      .settings-panel { right: -16vw; }
+    }
+    .modal-bg {
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+      background: #000a;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 99;
+      animation: fadeIn .2s;
+    }
+    @keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
+    .modal {
+      background: #23233a;
+      color: #fff;
+      border-radius: 1em;
+      padding: 2em 1.7em;
+      min-width: 220px;
+      max-width: 95vw;
+      box-shadow: 0 4px 40px #0008;
+      font-size: 1.11em;
+      text-align: center;
+      z-index: 100;
+    }
+    .modal button {
+      margin: 0 1.3em; margin-top: 1.5em;
+      background: var(--accent); color: #fff; font-size: 1em; border-radius: 0.8em;
+      padding: 0.4em 1.2em; border: none; cursor: pointer; transition: background .18s;
+      font-weight: bold;
+    }
+    .modal button:hover { background: #a31621; }
+    .img-upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2em; height: 2.2em;
+      background: #23233c;
+      border-radius: 0.7em;
+      cursor: pointer;
+      box-shadow: 0 1px 3px #0002;
+      font-size: 1.3em;
+      margin-right: 0.5em;
+      margin-bottom: 0.2em;
+      border: 2px solid #343451;
+      transition: background .18s, border .18s;
+      color: #fff;
+    }
+    .img-upload-btn:hover {
+      background: #38385a;
+      border-color: var(--accent);
+    }
+    .img-upload-btn span {
+      pointer-events: none;
+    }
+    #charImg {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-right-tools">
+    <button class="bg-upload-btn" id="bgUploadBtn" title="Arkaplan resmi yükle">🖼️</button>
+    <input type="file" id="bgInput" accept="image/*">
+    <button class="settings-btn" id="settingsBtn" title="Ayarlar">⚙️</button>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-label">
+        <span>Tema Rengi</span>
+        <input type="color" id="mainColorInput" value="#181825" title="Ana Tema Rengi">
+      </div>
+      <div class="settings-label">
+        <span>Parlaklık Rengi</span>
+        <input type="color" id="glowColorInput" value="#ea4c89" title="Parlaklık (Turn) Rengi">
+      </div>
+      <div class="settings-label">
+        <span>Ses Seviyesi</span>
+        <input type="range" id="volumeInput" min="0" max="100" value="70">
+        <span class="settings-volume-value" id="volumeVal">70</span>
+      </div>
+    </div>
+  </div>
+  <h1>D&D HP Tracker</h1>
+  <div class="tracker-container">
+    <div class="turn-info">
+      <div class="turn-count">
+        Tur: <span id="turnCount">1</span>
+        <button class="reset-turn-btn" id="resetTurnBtn" title="Tur sayacını sıfırla">♻️</button>
+      </div>
+      <div style="text-align:right;">
+        <button id="nextTurnBtn" style="background:#5bc0eb;color:#13122b;border-radius:1em;padding:0.5em 1.2em;font-weight:bold;box-shadow:0 1px 8px #0002;font-size:1.05em;cursor:pointer;">Sıradaki</button>
+      </div>
+    </div>
+    <form class="add-form" id="addCharForm" autocomplete="off">
+      <input type="text" id="charName" placeholder="Karakter adı" required style="flex:1 1 0;min-width:120px;">
+      <input type="number" id="charHP" placeholder="HP" min="1" required style="flex:1 1 0;min-width:120px;">
+      <input type="number" id="charMaxHP" placeholder="Max HP" min="1" required style="flex:1 1 0;min-width:120px;">
+      <input type="number" id="charArmor" placeholder="Zırh" min="0" required style="flex:1 1 0;min-width:120px;">
+      <input type="number" id="charInit" placeholder="İnisiyatif" min="0" required style="flex:1 1 0;min-width:120px;">
+      <label class="img-upload-btn" for="charImg" title="Karakter resmi ekle">
+        <span>🖼️</span>
+      </label>
+      <input type="file" id="charImg" accept="image/*" style="display:none;">
+      <button type="submit">Ekle</button>
+    </form>
+    <div class="cards" id="charCards"></div>
+  </div>
+  <div id="modalBg" style="display:none;"></div>
+  <!-- Basit bir “ding” sesi için gömülü audio -->
+  <audio id="turnSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRqQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAADz/AP8A/wA+AD8APgA9AD0APAA6ADoAOgA3ADcANgA1ADUANAAzADMANAA0ADQANgA3ADsAPgA/AP8A/wD/AP8A" type="audio/wav">
+  </audio>
+  <script>
+    const charCards = document.getElementById('charCards');
+    const addCharForm = document.getElementById('addCharForm');
+    const nextTurnBtn = document.getElementById('nextTurnBtn');
+    const modalBg = document.getElementById('modalBg');
+    const turnCountElem = document.getElementById('turnCount');
+    const resetTurnBtn = document.getElementById('resetTurnBtn');
+    const bgUploadBtn = document.getElementById('bgUploadBtn');
+    const bgInput = document.getElementById('bgInput');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const mainColorInput = document.getElementById('mainColorInput');
+    const glowColorInput = document.getElementById('glowColorInput');
+    const volumeInput = document.getElementById('volumeInput');
+    const volumeVal = document.getElementById('volumeVal');
+    const turnSound = document.getElementById('turnSound');
+
+    let chars = [];
+    let turnIndex = 0;
+    let turnCount = 1;
+
+    // -------- Parlaklık Rengi HEX to RGBA (alpha ile) ----------
+    function hexToRgba(hex, alpha) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(x=>x+x).join('');
+      const r = parseInt(hex.substring(0,2), 16);
+      const g = parseInt(hex.substring(2,4), 16);
+      const b = parseInt(hex.substring(4,6), 16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    // Ses seviyesi sliderı
+    function updateVolume(val) {
+      turnSound.volume = val / 100;
+      volumeVal.textContent = val;
+      localStorage.setItem('hptracker_turn_volume', val);
+    }
+    // Slider değişince
+    volumeInput.addEventListener('input', e => updateVolume(e.target.value));
+    // Sayfa açılışında localStorage varsa uygula
+    (function(){
+      const savedVol = localStorage.getItem('hptracker_turn_volume');
+      if(savedVol!==null) {
+        volumeInput.value = savedVol;
+        updateVolume(savedVol);
+      } else {
+        updateVolume(volumeInput.value);
+      }
+    })();
+
+    // Ayarlar paneli göster/gizle
+    settingsBtn.onclick = (e) => {
+      e.stopPropagation();
+      settingsPanel.classList.toggle('active');
+    };
+    window.addEventListener('mousedown', e => {
+      if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+        settingsPanel.classList.remove('active');
+      }
+    });
+
+    mainColorInput.addEventListener('input', (e) => {
+      document.documentElement.style.setProperty('--main-bg', e.target.value);
+      document.documentElement.style.setProperty('--card-bg', e.target.value);
+      document.documentElement.style.setProperty('--hp-bg', e.target.value);
+    });
+
+    function updateGlowVars(hex) {
+      document.documentElement.style.setProperty('--turn-glow', hex);
+      document.documentElement.style.setProperty('--turn-glow-light', hexToRgba(hex, 0.5));
+      document.documentElement.style.setProperty('--turn-glow-strong', hexToRgba(hex, 0.8));
+    }
+    glowColorInput.addEventListener('input', (e) => {
+      updateGlowVars(e.target.value);
+    });
+    updateGlowVars(glowColorInput.value);
+
+    function showModal(msg, onConfirm) {
+      modalBg.innerHTML = `<div class='modal'>${msg}<br><button id='modalYes'>Evet</button><button id='modalNo'>Vazgeç</button></div>`;
+      modalBg.style.display = 'flex';
+      document.getElementById('modalNo').onclick = () => { modalBg.style.display = 'none'; };
+      document.getElementById('modalYes').onclick = () => {
+        modalBg.style.display = 'none';
+        onConfirm && onConfirm();
+      };
+    }
+
+    function getHPBarColor(hp, maxHp) {
+      if (maxHp === 0) return 'var(--hp-bar-grey)';
+      if (hp <= 0) return 'var(--hp-bar-grey)';
+      let percent = 100 * hp / maxHp;
+      if (percent > 70) return 'var(--hp-bar-green)';
+      if (percent > 30) return 'var(--hp-bar-yellow)';
+      return 'var(--hp-bar-red)';
+    }
+
+    function playTurnSound() {
+      // Ses hızlıca art arda çalınabilsin diye klon kullanılır.
+      try {
+        const clone = turnSound.cloneNode(true);
+        clone.volume = turnSound.volume;
+        clone.play();
+      } catch(e) { /* autoplay engeli olabilir, sessizce geç */ }
+    }
+
+    function render() {
+      chars.sort((a, b) => b.init - a.init);
+      if (chars.length > 0 && turnIndex >= chars.length) turnIndex = 0;
+      charCards.innerHTML = '';
+      chars.forEach((char, i) => {
+        const isTurn = (i === turnIndex);
+        const hpPercent = Math.max(0, Math.min(100, Math.round(100*char.hp/char.maxHp)));
+        const barColor = getHPBarColor(char.hp, char.maxHp);
+        const card = document.createElement('div');
+        card.className = 'char-card' + (isTurn ? ' turn' : '');
+        let imgHTML = '';
+        if (char.imgData) {
+          imgHTML = `<img src='${char.imgData}' class='char-img' alt='Karakter resmi'/>`;
+        } else {
+          imgHTML = `<div class='char-img' title='Resim yok'>👤</div>`;
+        }
+        card.innerHTML = `
+          <button class="delete-btn" title="Sil">🗑️</button>
+          ${imgHTML}
+          <div class="card-main">
+            <div class="char-name-row">
+              <div class="initiative" title="İnisiyatif">${char.init}</div>
+              <div class="char-name">${char.name}</div>
+            </div>
+            <div class="bar-row">
+              <div class="hp-section">
+                <span title="Can">❤️</span>
+                <span>${char.hp}</span>
+                <span style="opacity:0.55;">/</span>
+                <span style="opacity:0.8;">${char.maxHp}</span>
+                <div class="controls">
+                  <button title="HP -1" data-diff="-1">-</button>
+                  <button title="HP +1" data-diff="1">+</button>
+                </div>
+              </div>
+              <div class="hp-bar-ct">
+                <div class="hp-bar" style="width:${hpPercent}%; background:${barColor};"></div>
+                <div class="bar-label">${hpPercent}%</div>
+              </div>
+              <div class="armor-section">
+                <span title="Zırh">🛡️</span>
+                <span>${char.armor}</span>
+                <div class="controls">
+                  <button title="Zırh -1" data-adj="-1">-</button>
+                  <button title="Zırh +1" data-adj="1">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        card.querySelector('.delete-btn').onclick = () => {
+          showModal(`<b>${char.name}</b> karakterini silmek istediğine emin misin?`, () => {
+            chars.splice(i,1);
+            if (turnIndex >= chars.length) turnIndex = 0;
+            render();
+          });
+        };
+        const hpBtns = card.querySelectorAll('.hp-section .controls button');
+        hpBtns[0].onclick = () => { char.hp = Math.max(0, char.hp-1); render(); };
+        hpBtns[1].onclick = () => { char.hp = Math.min(char.maxHp, char.hp+1); render(); };
+        const armorBtns = card.querySelectorAll('.armor-section .controls button');
+        armorBtns[0].onclick = () => { char.armor = Math.max(0, char.armor-1); render(); };
+        armorBtns[1].onclick = () => { char.armor = char.armor+1; render(); };
+        charCards.appendChild(card);
+      });
+      turnCountElem.textContent = turnCount;
+    }
+
+    addCharForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('charName').value.trim();
+      const hp = parseInt(document.getElementById('charHP').value);
+      const maxHp = parseInt(document.getElementById('charMaxHP').value);
+      const armor = parseInt(document.getElementById('charArmor').value);
+      const init = parseInt(document.getElementById('charInit').value);
+      const imgInput = document.getElementById('charImg');
+      let imgData = "";
+      if (imgInput.files && imgInput.files[0]) {
+        imgData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(imgInput.files[0]);
+        });
+      }
+      chars.push({name, hp, maxHp, armor, init, imgData});
+      chars.sort((a,b)=>b.init-a.init);
+      turnIndex = 0;
+      turnCount = 1;
+      render();
+      addCharForm.reset();
+    };
+
+    nextTurnBtn.onclick = () => {
+      if(chars.length===0) return;
+      turnIndex = (turnIndex+1)%chars.length;
+      if (turnIndex === 0) {
+        turnCount++;
+      }
+      playTurnSound();
+      render();
+    };
+
+    resetTurnBtn.onclick = () => {
+      turnCount = 1;
+      turnIndex = 0;
+      render();
+    };
+
+    // Custom background yükleme
+    bgUploadBtn.onclick = () => bgInput.click();
+    bgInput.onchange = () => {
+      if(bgInput.files && bgInput.files[0]){
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.body.style.backgroundImage = `url('${e.target.result}')`;
+          document.body.style.backgroundSize = "cover";
+          document.body.style.backgroundRepeat = "repeat";
+        };
+        reader.readAsDataURL(bgInput.files[0]);
+      }
+    };
+
+    render();
+  </script>
+</body>
+</html>
