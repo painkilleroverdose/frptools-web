@@ -312,6 +312,20 @@
     }
     #result-badge.success { color: #3fff90; text-shadow: 0 0 24px #4aff8fa0, 0 0 60px #32ff838a, 0 1px 16px #3ae676; filter: blur(0px) drop-shadow(0 0 20px #29ff70) brightness(1.07);}
     #result-badge.failure { color: #ff5151; text-shadow: 0 0 24px #ff4040a8, 0 0 60px #ff2a2a95, 0 1px 16px #e2001c; filter: blur(0px) drop-shadow(0 0 20px #ff2929) brightness(1.07);}
+
+    /* ALTIN PARTİKÜLÜNÜN STİLİ */
+    .particle {
+      position: fixed;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 60% 30%, #ffe066, #f8c146 60%, #ad8700 100%);
+      box-shadow: 0 0 10px 2px #ffd700, 0 0 20px 10px #fff20044;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform, opacity;
+      transition: none;
+    }
   </style>
 </head>
 <body>
@@ -355,6 +369,10 @@
     <audio id="dice-success" src="diceSuccess.mp3" preload="auto"></audio>
     <audio id="dice-fail" src="diceFail.mp3" preload="auto"></audio>
   </div>
+
+  <!-- GOLD PARTICLE ANİMASYONU DOSYASI -->
+  <script src="goldParticles.js"></script>
+
   <script>
     const diceImg = document.getElementById('dice-img');
     const difficultyInput = document.getElementById('difficulty-input');
@@ -447,6 +465,13 @@
       if (success) {
         setTimeout(() => {
           showBadge("Başarılı!", "success");
+          // ALTIN PARTİKÜLLERİ OLUŞTUR
+          const rect = diceAnimBox.getBoundingClientRect();
+          const centerX = rect.left + rect.width/2;
+          const centerY = rect.top + rect.height/2;
+          if (typeof createGoldParticles === "function") {
+            createGoldParticles(centerX, centerY);
+          }
         }, 3000);
 
         diceAnimBox.classList.add("green-glow");
