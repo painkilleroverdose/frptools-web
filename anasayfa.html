@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Projelerim Ana Sayfa</title>
+  <link href="https://fonts.googleapis.com/css?family=Cinzel:700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #181920;
+      --card-bg: #23242c;
+      --accent: #b08d57;
+      --text: #fff;
+      --card-shadow: 0 6px 32px rgba(0,0,0,0.18);
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cinzel', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h1 {
+      margin-top: 48px;
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-shadow: 0 2px 8px #0007;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 36px;
+      width: 90vw;
+      max-width: 980px;
+      margin: 40px 0 0 0;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--card-shadow);
+      padding: 38px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: transform .14s, box-shadow .14s;
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 0 14px 36px rgba(176, 141, 87, 0.13), var(--card-shadow);
+    }
+    .card-title {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-weight: bold;
+      letter-spacing: .5px;
+    }
+    .card-desc {
+      font-size: 1rem;
+      color: #ddd;
+      margin-bottom: 18px;
+    }
+    .open-btn {
+      margin-top: auto;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #181920;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: bold;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: background .14s;
+    }
+    .open-btn:hover {
+      background: #fff3;
+      color: var(--accent);
+    }
+    @media (max-width: 700px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Projelerim Ana Sayfa</h1>
+  <div class="cards">
+    <div class="card" onclick="window.location='battle/battle.html'">
+      <div class="card-title">D&D OBS Savaş Sahnesi Yaratma</div>
+      <div class="card-desc">OBS veya yayın için özelleştirilebilir D&D savaş sahnesi oluşturma aracı.</div>
+      <button class="open-btn">Aç</button>
+    </div>
+    <div class="card" onclick="window.location='hptracker/hptracker.html'">
+      <div class="card-title">HP Takip Aracı</div>
+      <div class="card-desc">Karakterlerin can, zırh ve inisiyatiflerini takip et.</div>
+      <button class="open-btn">Aç</button>
+    </div>
+    <div class="card" onclick="window.location='diceroller/index.html'">
+      <div class="card-title">3D Zar Atıcı</div>
+      <div class="card-desc">Fizik tabanlı 3D D&D zarı simülatörü.</div>
+      <button class="open-btn">Aç</button>
+    </div>
+    <!-- İstediğin kadar kart ekleyebilirsin: 
+    <div class="card" onclick="window.location='dosya-adı.html'">
+      <div class="card-title">Başlık</div>
+      <div class="card-desc">Açıklama.</div>
+      <button class="open-btn">Aç</button>
+    </div>
+    -->
+  </div>
+</body>
+</html>
