@@ -5,10 +5,8 @@
   <title>Zar Atma Sistemi - Tüm Animasyonlar</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto&display=swap" rel="stylesheet">
   <style>
-    html, body { height: 100%; }
+    html, body { height: 100%; margin: 0; min-height: 100vh; }
     body {
-      margin: 0;
-      min-height: 100vh;
       background: #00FF00;
       display: flex; align-items: center; justify-content: center;
       font-family: 'Roboto', Arial, sans-serif;
@@ -34,69 +32,44 @@
       background: #161618; color: #ffd; text-align: center; margin-left: 4px; padding: 3px 7px;
     }
     #dice-result-top {
-      font-size: 1.09rem;
-      color: #ffe9b0;
-      margin-top: 2px;
-      min-height: 1.7em;
-      text-align: left;
-      font-family: 'Roboto', Arial, sans-serif;
-      letter-spacing: .1em;
-      width: 100%;
-      user-select: none;
+      font-size: 1.09rem; color: #ffe9b0; margin-top: 2px; min-height: 1.7em; text-align: left;
+      font-family: 'Roboto', Arial, sans-serif; letter-spacing: .1em; width: 100%; user-select: none;
     }
     .dice-container {
-      background: rgba(30,28,44,0.96);
-      border: 3.5px solid #bca356;
-      border-radius: 0;
+      background: rgba(30,28,44,0.96); border: 3.5px solid #bca356;
       box-shadow: 0 0 44px 10px #1a1a24;
-      width: 380px;
-      height: 670px;
-      display: flex; flex-direction: column; align-items: center; position: relative; overflow: visible;
-      justify-content: center;
-      padding: 0;
+      width: 380px; height: 670px;
+      display: flex; flex-direction: column; align-items: center; position: relative;
+      justify-content: center; padding: 0;
     }
     .dice-content-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 100%; flex: 1;
     }
-    .frame-corner {
-      position: absolute; width: 54px; height: 54px; border: 5px solid #bca356; border-radius: 18px; pointer-events: none;
-    }
-    .frame-tl { top: 0; left: 0; border-bottom: none; border-right: none; }
-    .frame-tr { top: 0; right: 0; border-bottom: none; border-left: none; }
-    .frame-bl { bottom: 0; left: 0; border-top: none; border-right: none; }
-    .frame-br { bottom: 0; right: 0; border-top: none; border-left: none; }
+    .frame-corner { position: absolute; width: 54px; height: 54px; border: 5px solid #bca356; border-radius: 18px; pointer-events: none;}
+    .frame-tl { top: 0; left: 0; border-bottom: none; border-right: none;}
+    .frame-tr { top: 0; right: 0; border-bottom: none; border-left: none;}
+    .frame-bl { bottom: 0; left: 0; border-top: none; border-right: none;}
+    .frame-br { bottom: 0; right: 0; border-top: none; border-left: none;}
     .difficulty-label {
-      font-family: 'Cinzel', serif;
-      font-size: 2.0rem;
-      color: #ecdcb0;
-      letter-spacing: 2.5px;
-      text-align: center;
-      margin-bottom: 0.28em;
-      text-shadow: 0 0 9px #bca35644, 0 2px 15px #0006;
-      transition: font-size .3s;
+      font-family: 'Cinzel', serif; font-size: 2.0rem; color: #ecdcb0; letter-spacing: 2.5px;
+      text-align: center; margin-bottom: 0.28em;
+      text-shadow: 0 0 9px #bca35644, 0 2px 15px #0006; transition: font-size .3s;
     }
     .difficulty-class {
-      font-family: 'Cinzel', serif; font-size: 2.2rem; color: #fff9e0; text-shadow: 0 2px 10px #bca35690;
-      margin-bottom: 18px; text-align: center; display: inline-block; background: none; box-shadow: none; opacity: 1;
-      position: relative; z-index: 5; pointer-events: none;
-      transition: color .5s, background .4s, transform .4s cubic-bezier(.46,1.4,.53,1.05), text-shadow .35s cubic-bezier(.51,1.5,.25,1), opacity .35s cubic-bezier(.5,1.5,.36,1.07);
+      font-family: 'Cinzel', serif; font-size: 2.2rem; color: #fff9e0;
+      text-shadow: 0 2px 10px #bca35690;
+      margin-bottom: 18px; text-align: center; display: inline-block; background: none;
+      opacity: 1; position: relative; z-index: 5; pointer-events: none;
+      transition: color .5s, background .4s, transform .4s cubic-bezier(.46,1.4,.53,1.05),
+        text-shadow .35s cubic-bezier(.51,1.5,.25,1), opacity .35s cubic-bezier(.5,1.5,.36,1.07);
       will-change: color, background, transform, text-shadow, opacity;
     }
-    .difficulty-class.fade-in { opacity: 1 !important; transition: opacity .35s cubic-bezier(.5,1.5,.36,1.07);}
-    .difficulty-class.fade-out { opacity: 0 !important; transition: opacity .32s cubic-bezier(.7,1.4,.4,1.12);}
     .difficulty-class.success {
       color: #30ff90; transform: scale(1.1);
       text-shadow: 0 0 8px #4aff8f, 0 0 24px #4aff8f, 0 0 42px #29ff84, 0 0 64px #17d458;
-      transition: color .4s, background .22s, transform .25s cubic-bezier(.62,1.7,.2,1), text-shadow .4s cubic-bezier(.51,1.5,.25,1);
     }
-    .difficulty-class.bounce-up {
-      animation: diff-bounce-up 0.85s cubic-bezier(.42,1.8,.52,1.01);
-    }
+    .difficulty-class.bounce-up { animation: diff-bounce-up 0.85s cubic-bezier(.42,1.8,.52,1.01);}
     @keyframes diff-bounce-up {
       0% { transform: translateY(0);}
       25% { transform: translateY(-22px);}
@@ -107,89 +80,47 @@
     .difficulty-class.failure {
       color: #ff5050; transform: scale(1.1);
       text-shadow: 0 0 8px #ff2222, 0 0 24px #ff2222, 0 0 42px #e6001e, 0 0 64px #b90022;
-      transition: color .4s, background .22s, transform .25s cubic-bezier(.62,1.7,.2,1), text-shadow .4s cubic-bezier(.51,1.5,.25,1);
     }
-    .difficulty-class.carpisma {
-      transition: transform .5s cubic-bezier(.7,1.6,.5,1.1), color .3s, opacity .52s, text-shadow .32s cubic-bezier(.4,1.2,.3,1);
-      pointer-events: none; will-change: transform, opacity, text-shadow; opacity: 1;
-    }
-    .difficulty-class.carpisma-fadeout {
-      animation: diff-fadeout 0.4s forwards cubic-bezier(.36,1.1,.55,1.1);
-      opacity: 0;
-    }
-    @keyframes diff-fadeout {
-      from { opacity: 1; }
-      to   { opacity: 0; }
-    }
+    .difficulty-class.carpisma { transition: transform .5s cubic-bezier(.7,1.6,.5,1.1), color .3s, opacity .52s, text-shadow .32s cubic-bezier(.4,1.2,.3,1);}
     .difficulty-class.carpisma-fade { opacity: 0; transition: opacity .52s cubic-bezier(.55,1.2,.44,1.13);}
+    .difficulty-class.smooth-back { transition: transform .34s cubic-bezier(.36,1.6,.39,1.05);}
+    .difficulty-class.failure.bounce-down { animation: down-bounce 0.8s cubic-bezier(.43,1.3,.58,1.1);}
     @keyframes down-bounce {
-      0%   { transform: translateY(0);}
-      40%  { transform: translateY(32px);}
+      0% { transform: translateY(0);}
+      40% { transform: translateY(32px);}
       100% { transform: translateY(0);}
     }
-    .difficulty-class.failure.bounce-down { animation: down-bounce 0.8s cubic-bezier(.43,1.3,.58,1.1);}
-    .difficulty-class.smooth-back { transition: transform .34s cubic-bezier(.36,1.6,.39,1.05);}
-    .dice-area {
-      margin: 0 0 22px 0; display: flex; flex-direction: column; align-items: center;
-      min-height: 150px; min-width: 150px; position: relative; justify-content: center; overflow: visible;
-    }
+    .dice-area { margin: 0 0 22px 0; display: flex; flex-direction: column; align-items: center;
+      min-height: 150px; min-width: 150px; position: relative; justify-content: center; overflow: visible;}
     .dice-anim-box {
       width: 110px; height: 110px; display: flex; align-items: center; justify-content: center;
       position: relative; margin: 0 auto; z-index: 10;
-      transition: box-shadow .25s, filter .5s cubic-bezier(.45,1.4,.41,1.08);
-      will-change: transform, filter; cursor: pointer;
-      pointer-events: auto;
+      transition: filter 1.6s cubic-bezier(.42,0,.48,1.05), box-shadow .25s;
+      will-change: transform, filter; cursor: pointer; pointer-events: auto;
     }
     .dice-anim-box.glow { filter: drop-shadow(0 0 56px #67fef8cc);}
-    .dice-anim-box.glow-fail {
-      filter: drop-shadow(0 0 48px #ff2233cc) drop-shadow(0 0 74px #b80013cc);
-      transition: filter .72s cubic-bezier(.47,1.48,.33,1.09);
-    }
-    .dice-anim-box.green-glow {
-      filter: drop-shadow(0 0 44px #4aff8fcc) drop-shadow(0 0 60px #16fc67bb);
-      transition: filter 0.25s cubic-bezier(.3,1.3,.38,1.05);
-    }
-    .dice-anim-box.fade-green-glow {
-      filter: drop-shadow(0 0 0px #4aff8fcc) drop-shadow(0 0 0px #16fc67bb);
-      transition: filter 2s cubic-bezier(.42,0,.48,1.05);
-    }
-    .dice-anim-box.crash-glow {
-      filter: drop-shadow(0 0 64px #3aff6fcc) drop-shadow(0 0 90px #17ff4fbb) brightness(1.23);
-      transition: filter .35s cubic-bezier(.34,1.2,.48,1.11);
-    }
+    .dice-anim-box.glow-fail { filter: drop-shadow(0 0 48px #ff2233cc) drop-shadow(0 0 74px #b80013cc);}
+    .dice-anim-box.green-glow { filter: drop-shadow(0 0 44px #4aff8fcc) drop-shadow(0 0 60px #16fc67bb);}
+    .dice-anim-box.fade-green-glow { filter: drop-shadow(0 0 0px #4aff8fcc) drop-shadow(0 0 0px #16fc67bb);}
+    .dice-anim-box.crash-glow { filter: drop-shadow(0 0 64px #3aff6fcc) drop-shadow(0 0 90px #17ff4fbb) brightness(1.23);}
     .dice-img {
       width: 110px; height: 110px; object-fit: contain; display: block; user-select: none; pointer-events: none;
       background: transparent; border-radius: 0; border: none;
       filter: drop-shadow(0 0 16px #50e5ff88) drop-shadow(0 0 44px #41a7f777);
       transition: filter .24s; z-index: 10; position: relative;
     }
-    .dice-img.success-bounce {
-      animation: dice-bounce-grow 0.3s cubic-bezier(.39,1.7,.37,1.08) forwards;
-      z-index: 15;
-    }
+    .dice-img.success-bounce { animation: dice-bounce-grow 0.3s cubic-bezier(.39,1.7,.37,1.08) forwards; z-index: 15;}
     @keyframes dice-bounce-grow {
-      0%   { transform: scale(1);}
-      65%  { transform: scale(1.26);}
+      0% { transform: scale(1);}
+      65% { transform: scale(1.26);}
       100% { transform: scale(1);}
     }
-    .dice-img.crash-grow {
-      animation: crash-grow 0.45s cubic-bezier(.46,1.6,.36,1.04) forwards;
-      z-index: 16;
-    }
-    @keyframes crash-grow {
-      0%   { transform: scale(1);}
-      100% { transform: scale(1.34);}
-    }
-    .dice-img.crash-shrink {
-      animation: crash-shrink 0.14s cubic-bezier(.82,0,.41,1.36) forwards;
-      z-index: 16;
-    }
-    @keyframes crash-shrink {
-      0%   { transform: scale(1.34);}
-      60%  { transform: scale(0.83);}
-      100% { transform: scale(1);}
-    }
+    .dice-img.crash-grow { animation: crash-grow 0.45s cubic-bezier(.46,1.6,.36,1.04) forwards; z-index: 16;}
+    @keyframes crash-grow { 0% { transform: scale(1);} 100% { transform: scale(1.34);}}
+    .dice-img.crash-shrink { animation: crash-shrink 0.14s cubic-bezier(.82,0,.41,1.36) forwards; z-index: 16;}
+    @keyframes crash-shrink { 0% { transform: scale(1.34);} 60% { transform: scale(0.83);} 100% { transform: scale(1);}}
     .dice-glow { filter: drop-shadow(0 0 34px #70ffe7cc) drop-shadow(0 0 52px #41a7f7cc) brightness(1.17);}
+    .dice-shake { animation: shake 1s cubic-bezier(.35,1.4,.46,1.05) forwards; filter: drop-shadow(0 0 62px #fe3030cc) drop-shadow(0 0 110px #ff1e1ecc);}
     @keyframes shake {
       0% { transform: translate(0,0) rotate(0deg) scale(1);}
       8% { transform: translate(-4px, 0) rotate(-1.5deg) scale(1.06);}
@@ -204,93 +135,40 @@
       80% { transform: translate(0, 0) rotate(0deg) scale(1.50);}
       100% { transform: translate(0,0) rotate(0deg) scale(2);}
     }
-    .dice-shake {
-      animation: shake 1s cubic-bezier(.35,1.4,.46,1.05) forwards;
-      filter: drop-shadow(0 0 62px #fe3030cc) drop-shadow(0 0 110px #ff1e1ecc);
-      z-index: 12; transition: filter .32s cubic-bezier(.65,1.3,.39,1.05);
-    }
-    @keyframes dice-shrink {
-      from { transform: scale(2);}
-      to { transform: scale(1);}
-    }
+    @keyframes dice-shrink { from { transform: scale(2);} to { transform: scale(1);}}
     .dice-shrink { animation: dice-shrink .4s cubic-bezier(.47,1.62,.44,1) forwards;}
-    .roll-btn { display: none; }
     .settings-btn {
       position: fixed; top: 32px; right: 34px; z-index: 150;
-      background: rgba(33,28,38,0.95);
-      border: 2.5px solid #bca356;
-      border-radius: 15px;
-      padding: 8px 12px 7px 12px;
-      box-shadow: 0 0 18px #0008, 0 1px 24px #2e222655;
-      color: #ecdcb0;
-      font-size: 1.45rem;
-      cursor: pointer;
-      transition: background .16s, color .17s, border .18s;
-      outline: none;
-      display: flex; align-items: center; gap: 8px;
-      backdrop-filter: blur(1.5px);
+      background: rgba(33,28,38,0.95); border: 2.5px solid #bca356; border-radius: 15px;
+      padding: 8px 12px 7px 12px; box-shadow: 0 0 18px #0008, 0 1px 24px #2e222655;
+      color: #ecdcb0; font-size: 1.45rem; cursor: pointer;
+      transition: background .16s, color .17s, border .18s; outline: none;
+      display: flex; align-items: center; gap: 8px; backdrop-filter: blur(1.5px);
     }
-    .settings-btn:hover {
-      background: #bca356;
-      color: #221b22;
-      border-color: #ffe9b0;
-    }
+    .settings-btn:hover { background: #bca356; color: #221b22; border-color: #ffe9b0;}
     .settings-panel {
-      position: fixed; top: 72px; right: 38px; z-index: 200;
-      background: rgba(33,28,38,0.99);
-      border: 2.5px solid #bca356;
-      border-radius: 19px;
-      padding: 10px 14px 9px 14px;
+      position: fixed; top: 72px; right: 38px; z-index: 200; background: rgba(33,28,38,0.99);
+      border: 2.5px solid #bca356; border-radius: 19px; padding: 10px 14px 9px 14px;
       box-shadow: 0 0 32px #000a, 0 1px 28px #2e222655;
-      color: #ffe9b0;
-      min-width: 170px; max-width: 240px;
-      display: none;
-      flex-direction: column;
-      gap: 11px;
-      font-size: 1.07rem;
+      color: #ffe9b0; min-width: 170px; max-width: 240px; display: none;
+      flex-direction: column; gap: 11px; font-size: 1.07rem;
       animation: fadeIn .18s;
     }
-    .settings-panel label {
-      color: #ecdcb0;
-      font-size: 0.97rem;
-      letter-spacing: .16em;
-      margin-bottom: 3px;
-      display: block;
-    }
-    .settings-panel input[type="color"] {
-      width: 36px; height: 26px; border-radius: 8px; border: 1.5px solid #bca356;
-      background: #151518;
-      margin-left: 7px;
-      cursor: pointer;
-    }
-    .settings-panel input[type="file"] {
-      margin-top: 6px;
-      color: #ffe9b0;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-12px);}
-      to   { opacity: 1; transform: none;}
-    }
+    .settings-panel label { color: #ecdcb0; font-size: 0.97rem; letter-spacing: .16em; margin-bottom: 3px;}
+    .settings-panel input[type="color"] { width: 36px; height: 26px; border-radius: 8px; border: 1.5px solid #bca356;
+      background: #151518; margin-left: 7px; cursor: pointer;}
+    .settings-panel input[type="file"] { margin-top: 6px; color: #ffe9b0;}
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-12px);} to { opacity: 1; transform: none;}}
     .settings-close-btn {
-      position: absolute; top: 6px; right: 10px; font-size: 1.2rem; background: none; border: none; color: #ffe9b0; cursor: pointer;
+      position: absolute; top: 6px; right: 10px; font-size: 1.2rem; background: none; border: none;
+      color: #ffe9b0; cursor: pointer;
     }
-    .settings-close-btn:hover { color: #ff6464; }
+    .settings-close-btn:hover { color: #ff6464;}
     #result-badge {
-      position: absolute;
-      left: 50%; bottom: 38px;
-      transform: translateX(-50%);
-      min-width: 180px;
-      min-height: 42px;
-      text-align: center;
-      font-family: 'Cinzel', serif;
-      font-size: 2.1rem;
-      font-weight: bold;
-      letter-spacing: .04em;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 30;
-      filter: blur(3px);
-      transition: none;
+      position: absolute; left: 50%; bottom: 38px; transform: translateX(-50%);
+      min-width: 180px; min-height: 42px; text-align: center;
+      font-family: 'Cinzel', serif; font-size: 2.1rem; font-weight: bold; letter-spacing: .04em;
+      opacity: 0; pointer-events: none; z-index: 30; filter: blur(3px); transition: none;
     }
     #result-badge.visible {
       animation: badge-pop 0.7s cubic-bezier(.49,1.7,.29,.99), badge-stay 1.3s linear 0.7s, badge-fade 0.5s cubic-bezier(.6,0,.49,1) 2s;
@@ -302,40 +180,16 @@
       90% { opacity: 1; transform: translateX(-50%) scale(0.98);}
       100% { opacity: 1; transform: translateX(-50%) scale(1);}
     }
-    @keyframes badge-stay {
-      from { opacity: 1; }
-      to   { opacity: 1; }
-    }
-    @keyframes badge-fade {
-      from { opacity: 1; filter: blur(0px);}
-      to   { opacity: 0; filter: blur(5px);}
-    }
+    @keyframes badge-stay { from { opacity: 1; } to { opacity: 1; } }
+    @keyframes badge-fade { from { opacity: 1; filter: blur(0px);} to { opacity: 0; filter: blur(5px);}}
     #result-badge.success { color: #3fff90; text-shadow: 0 0 24px #4aff8fa0, 0 0 60px #32ff838a, 0 1px 16px #3ae676; filter: blur(0px) drop-shadow(0 0 20px #29ff70) brightness(1.07);}
     #result-badge.failure { color: #ff5151; text-shadow: 0 0 24px #ff4040a8, 0 0 60px #ff2a2a95, 0 1px 16px #e2001c; filter: blur(0px) drop-shadow(0 0 20px #ff2929) brightness(1.07);}
-
-    /* ALTIN PARTİKÜLÜNÜN STİLİ */
-    .particle {
-      position: fixed;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
+    .particle { position: fixed; width: 9px; height: 9px; border-radius: 50%;
       background: radial-gradient(circle at 60% 30%, #ffe066, #f8c146 60%, #ad8700 100%);
       box-shadow: 0 0 10px 2px #ffd700, 0 0 20px 10px #fff20044;
-      pointer-events: none;
-      z-index: 9999;
-      will-change: transform, opacity;
-      transition: none;
+      pointer-events: none; z-index: 9999; will-change: transform, opacity; transition: none;
     }
-	
-	.explosion-particle-fail {
-	  position: fixed;
-	  pointer-events: none;
-	  z-index: 99999;
-	  will-change: transform, opacity;
-	  transition: none;
-	  border-radius: 50%;
-	}
-
+    .explosion-particle-fail { position: fixed; pointer-events: none; z-index: 99999; will-change: transform, opacity; transition: none; border-radius: 50%;}
   </style>
 </head>
 <body>
@@ -379,12 +233,11 @@
     <audio id="dice-success" src="diceSuccess.mp3" preload="auto"></audio>
     <audio id="dice-fail" src="diceFail.mp3" preload="auto"></audio>
   </div>
-
-  <!-- GOLD PARTICLE ANİMASYONU DOSYASI -->
+  <!-- Altın Partikül Animasyonu -->
   <script src="goldParticles.js"></script>
   <script src="explosionParticles.js"></script>
-
   <script>
+    // Temel değişkenler
     const diceImg = document.getElementById('dice-img');
     const difficultyInput = document.getElementById('difficulty-input');
     const difficultyValue = document.getElementById('difficulty-value');
@@ -394,15 +247,14 @@
     const diceResultTop = document.getElementById('dice-result-top');
     const resultBadge = document.getElementById('result-badge');
     const currentSides = 20;
-
     const settingsBtn = document.getElementById('settings-btn');
     const settingsPanel = document.getElementById('settings-panel');
     const settingsCloseBtn = document.getElementById('settings-close-btn');
     const bgColorPicker = document.getElementById('bg-color-picker');
     const bgImagePicker = document.getElementById('bg-image-picker');
-
     let zarAtiliyor = false;
 
+    // Yardımcı fonksiyonlar
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
     const randomNearby = (min, max) => Math.random() * (max - min) + min;
     const resetDifficultyState = () => {
@@ -465,7 +317,6 @@
           setTimeout(() => showResult(success, face, zorluk), 210);
         }, 120);
       }
-
       animateJump();
     });
 
@@ -475,12 +326,8 @@
 
       if (success) {
         setTimeout(() => {
-		  if (face >= 18) {
-			showBadge("Kritik Başarı!", "success");
-		  } else {
-			showBadge("Başarılı!", "success");
-		  }
-          // ALTIN PARTİKÜLLERİ OLUŞTUR
+          showBadge(face >= 18 ? "Kritik Başarı!" : "Başarılı!", "success");
+          // Altın partikül animasyonu
           const rect = diceAnimBox.getBoundingClientRect();
           const centerX = rect.left + rect.width/2;
           const centerY = rect.top + rect.height/2;
@@ -493,21 +340,14 @@
         diceImg.classList.remove("success-bounce");
         void diceImg.offsetWidth;
         diceImg.classList.add("success-bounce");
-        setTimeout(() => {
-          diceImg.classList.remove("success-bounce");
-        }, 350);
+        setTimeout(() => diceImg.classList.remove("success-bounce"), 350);
 
         difficultyValue.classList.add("success");
         zarAtiliyor = false;
 
         setTimeout(() => {
           difficultyValue.classList.add("bounce-up");
-          setTimeout(() => {
-            diceAnimBox.classList.add("green-glow");
-          }, 212);
-          setTimeout(() => {
-            difficultyValue.classList.remove("bounce-up");
-          }, 850);
+          setTimeout(() => difficultyValue.classList.remove("bounce-up"), 850);
         }, 1200);
 
         setTimeout(() => {
@@ -521,26 +361,21 @@
             diceAnimBox.classList.remove("crash-glow");
             setTimeout(() => {
               diceImg.classList.remove("crash-shrink");
-              // --- Glow'u 2sn'lik fade ile azalt ---
               diceAnimBox.classList.remove("green-glow");
-              diceAnimBox.classList.add("fade-green-glow");
-              setTimeout(() => {
-                diceAnimBox.classList.remove("fade-green-glow");
-              }, 2000);
-              // --- Zorluk kutusu rengini eski haline getir ---
+              requestAnimationFrame(() => {
+                diceAnimBox.classList.add("fade-green-glow");
+                setTimeout(() => diceAnimBox.classList.remove("fade-green-glow"), 1600);
+              });
               difficultyValue.classList.remove("success");
             }, 140);
           }, 450);
         }, 3500);
 
       } else {
-		  setTimeout(() => {
-			if (face < 3) {
-			  showBadge("Kritik Başarısızlık!", "failure");
-			} else {
-			  showBadge("Başarısız...", "failure");
-			}
-		  }, 3700);
+        setTimeout(() => {
+          showBadge(face < 4 ? "Kritik Başarısızlık!" : "Başarısız...", "failure");
+        }, 3700);
+
         setTimeout(() => {
           difficultyValue.classList.add("failure");
           setTimeout(() => {
@@ -549,10 +384,7 @@
               let curY = 0;
               const computed = window.getComputedStyle(difficultyValue).transform;
               if (computed && computed !== "none") {
-                try {
-                  const matrix = new DOMMatrixReadOnly(computed);
-                  curY = matrix.m42;
-                } catch(e) { curY = 0; }
+                try { curY = new DOMMatrixReadOnly(computed).m42; } catch(e) { curY = 0; }
               }
               difficultyValue.classList.remove("bounce-down");
               difficultyValue.classList.add("smooth-back");
@@ -569,16 +401,13 @@
                 setTimeout(() => {
                   difficultyValue.classList.add("carpisma-fade");
                   diceAnimBox.classList.add("dice-shake");
-				  
-				  // Patlama partikül efektini başlat
-					const rect = diceAnimBox.getBoundingClientRect();
-					const centerX = rect.left + rect.width/2 + window.scrollX;
-					const centerY = rect.top + rect.height/2 + window.scrollY;
-					if (typeof createFailExplosion === "function") {
-					  createFailExplosion(centerX, centerY);
-					}
-
-
+                  // Patlama partikül animasyonu
+                  const rect = diceAnimBox.getBoundingClientRect();
+                  const centerX = rect.left + rect.width/2 + window.scrollX;
+                  const centerY = rect.top + rect.height/2 + window.scrollY;
+                  if (typeof createFailExplosion === "function") {
+                    createFailExplosion(centerX, centerY);
+                  }
                   setTimeout(() => {
                     diceAnimBox.classList.remove("dice-shake");
                     diceAnimBox.classList.add("dice-shrink");
@@ -588,10 +417,12 @@
                       diceAnimBox.classList.remove("dice-shrink");
                       diceImg.classList.remove("dice-glow");
                       diceAnimBox.classList.remove("glow");
-                      difficultyValue.classList.remove("carpisma-fade", "carpisma", "failure");
-                      difficultyValue.classList.add("fade-in");
-                      zarAtiliyor = false;
-                    }, 400);
+                      difficultyValue.classList.remove("carpisma-fade", "carpisma");
+                      setTimeout(() => {
+                        difficultyValue.classList.remove("failure");
+                        zarAtiliyor = false;
+                      }, 300);
+                    }, 260);
                   }, 1000);
                 }, 0);
               }, 1000);
@@ -601,6 +432,7 @@
       }
     }
 
+    // Başlangıç durumu
     window.addEventListener('DOMContentLoaded', () => {
       diceImg.src = '1.png';
       difficultyValue.textContent = difficultyInput.value;
@@ -609,12 +441,9 @@
       diceResultTop.textContent = "";
     });
 
-    settingsBtn.addEventListener('click', () => {
-      settingsPanel.style.display = 'flex';
-    });
-    settingsCloseBtn.addEventListener('click', () => {
-      settingsPanel.style.display = 'none';
-    });
+    // Ayarlar paneli
+    settingsBtn.addEventListener('click', () => { settingsPanel.style.display = 'flex'; });
+    settingsCloseBtn.addEventListener('click', () => { settingsPanel.style.display = 'none'; });
     bgColorPicker.addEventListener('input', e => {
       document.body.style.background = e.target.value;
       document.body.style.backgroundSize = '';
