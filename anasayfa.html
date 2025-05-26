@@ -7,10 +7,12 @@
   <style>
     :root {
       --bg: #181920;
-      --card-bg: #23242c;
+      --header-bg: #23242c;
+      --card-bg: #24262f;
       --accent: #b08d57;
       --text: #fff;
-      --card-shadow: 0 6px 32px rgba(0,0,0,0.18);
+      --card-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      --card-radius: 20px;
     }
     body {
       margin: 0;
@@ -21,52 +23,72 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
     }
-    h1 {
-      margin-top: 48px;
-      font-size: 2.8rem;
-      letter-spacing: 1px;
+    .header {
+      width: 100%;
+      background: var(--header-bg);
+      padding: 36px 0 22px 0;
+      box-shadow: 0 3px 14px #0005;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 0 0 32px 32px;
+    }
+    .header h1 {
+      font-size: 2.7rem;
       color: var(--accent);
+      margin: 0 0 8px 0;
       text-shadow: 0 2px 8px #0007;
+      letter-spacing: 1.5px;
     }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 36px;
-      width: 90vw;
-      max-width: 980px;
-      margin: 40px 0 0 0;
+    .header p {
+      color: #e1cfa7;
+      font-size: 1.05rem;
+      letter-spacing: 0.3px;
+      margin: 0;
+      opacity: 0.87;
+    }
+    .card-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 34px;
+      justify-content: center;
+      width: 100%;
+      max-width: 950px;
+      margin: 50px 0 0 0;
     }
     .card {
       background: var(--card-bg);
-      border-radius: 18px;
+      border-radius: var(--card-radius);
       box-shadow: var(--card-shadow);
-      padding: 38px 28px;
+      padding: 38px 32px 32px 32px;
+      min-width: 260px;
+      max-width: 330px;
+      flex: 1 1 260px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      transition: transform .14s, box-shadow .14s;
-      cursor: pointer;
-      border: 2px solid transparent;
+      border: 2.5px solid transparent;
       position: relative;
+      transition: transform .15s, border-color .15s, box-shadow .15s;
+      cursor: pointer;
     }
     .card:hover {
-      transform: translateY(-6px) scale(1.02);
+      transform: translateY(-6px) scale(1.03);
       border-color: var(--accent);
-      box-shadow: 0 14px 36px rgba(176, 141, 87, 0.13), var(--card-shadow);
+      box-shadow: 0 14px 36px rgba(176, 141, 87, 0.16), var(--card-shadow);
     }
     .card-title {
-      font-size: 1.2rem;
-      margin-bottom: 12px;
+      font-size: 1.18rem;
       color: var(--accent);
       font-weight: bold;
+      margin-bottom: 10px;
       letter-spacing: .5px;
     }
     .card-desc {
-      font-size: 1rem;
-      color: #ddd;
-      margin-bottom: 18px;
+      font-size: 1.01rem;
+      color: #e3e2dd;
+      margin-bottom: 17px;
     }
     .open-btn {
       margin-top: auto;
@@ -80,41 +102,50 @@
       font-weight: bold;
       letter-spacing: .5px;
       cursor: pointer;
-      transition: background .14s;
+      transition: background .14s, color .14s;
+      box-shadow: 0 3px 10px #0003;
     }
     .open-btn:hover {
-      background: #fff3;
+      background: #fff4;
       color: var(--accent);
     }
-    @media (max-width: 700px) {
-      .cards {
-        grid-template-columns: 1fr;
+    @media (max-width: 800px) {
+      .card-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
       }
-      h1 {
+      .card {
+        max-width: 90vw;
+      }
+      .header h1 {
         font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Projelerim Ana Sayfa</h1>
-  <div class="cards">
-    <div class="card" onclick="window.location='battle/battle.html'">
+  <div class="header">
+    <h1>Projelerim Ana Sayfa</h1>
+    <p>D&D yayın araçların ve diğer yardımcı projelerin</p>
+  </div>
+  <div class="card-list">
+    <div class="card" onclick="window.location='BATTLE/battle.html'">
       <div class="card-title">D&D OBS Savaş Sahnesi Yaratma</div>
       <div class="card-desc">OBS veya yayın için özelleştirilebilir D&D savaş sahnesi oluşturma aracı.</div>
       <button class="open-btn">Aç</button>
     </div>
-    <div class="card" onclick="window.location='hptracker/hptracker.html'">
+    <div class="card" onclick="window.location='hp-tracker.html'">
       <div class="card-title">HP Takip Aracı</div>
       <div class="card-desc">Karakterlerin can, zırh ve inisiyatiflerini takip et.</div>
       <button class="open-btn">Aç</button>
     </div>
-    <div class="card" onclick="window.location='diceroller/index.html'">
-      <div class="card-title">3D Zar Atıcı</div>
-      <div class="card-desc">Fizik tabanlı 3D D&D zarı simülatörü.</div>
+    <div class="card" onclick="window.location='bg3styledice/index.html'">
+      <div class="card-title">3D Zar Atıcı (BG3 Style)</div>
+      <div class="card-desc">Baldur's Gate 3 tarzı fizik tabanlı 3D zar simülatörü.</div>
       <button class="open-btn">Aç</button>
     </div>
-    <!-- İstediğin kadar kart ekleyebilirsin: 
+    <!-- Yeni kart eklemek için buraya kopyala:
     <div class="card" onclick="window.location='dosya-adı.html'">
       <div class="card-title">Başlık</div>
       <div class="card-desc">Açıklama.</div>
