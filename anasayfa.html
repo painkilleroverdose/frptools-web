@@ -2,19 +2,25 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Projelerim Ana Sayfa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <title>FRP İçin Araçlar</title>
+  <!-- Inter fontunu ekle -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color1: #6a82fb;
-      --color2: #fc5c7d;
-      --color3: #43e97b;
-      --color4: #38f9d7;
-      --color5: #fffd87;
-      --color6: #f7971e;
-      --text: #23242c;
-      --card-bg: rgba(255,255,255,0.87);
-      --shadow: 0 10px 36px rgba(36,36,44,0.14), 0 1.5px 8px 0px rgba(0,0,0,0.14);
+      --bg-dark: #18191b;
+      --bg-mid: #232325;
+      --bg-light: #ededed;
+      --grain-alpha: 0.16;
+      --card-bg: #232325fa;
+      --card-shadow: 0 2px 18px #0006, 0 1.5px 8px 0px #0002;
+      --text-main: #ededed;
+      --text-muted: #bdbdbd;
+      --btn-bg: #fff;
+      --btn-hover: #ededed;
+      --btn-text: #18191b;
+      --btn-text-hover: #262325;
+      --radius: 19px;
+      --transition: .20s cubic-bezier(.54,1.48,.45,.89);
     }
     html, body {
       height: 100%;
@@ -24,243 +30,348 @@
     }
     body {
       min-height: 100vh;
-      background: linear-gradient(125deg, var(--color1), var(--color2) 55%, var(--color3), var(--color4));
-      background-size: 180% 180%;
-      animation: bgMove 16s ease-in-out infinite alternate;
-      font-family: 'Roboto', Arial, sans-serif;
-      color: var(--text);
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      z-index: 1;
+      overflow-x: hidden;
     }
-    @keyframes bgMove {
-      0% {background-position: 0 0;}
-      100% {background-position: 100% 100%;}
+    body:before {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      top:0; left:0; right:0; bottom:0;
+      pointer-events: none;
+      opacity: var(--grain-alpha);
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="160" height="160" filter="url(%23n)" opacity="0.8"/></svg>');
+      background-size: 200px 200px;
+      mix-blend-mode: overlay;
+    }
+    #mouseTrail {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 10000;
+      mix-blend-mode: lighten;
     }
     .header {
-      margin-top: 54px;
-      margin-bottom: 20px;
+      margin-top: 38px;
+      margin-bottom: 10px;
       text-align: center;
       z-index: 2;
+      letter-spacing: 0.02em;
+      width: 100%;
     }
     .header h1 {
-      font-family: 'Montserrat', 'Cinzel', serif;
-      font-size: 2.7rem;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      color: var(--card-bg);
-      text-shadow: 0 8px 32px #0006, 0 2px 0 #38f9d7;
-      margin-bottom: 8px;
-      animation: floatTitle 2.4s ease-in-out;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: #fff;
+      margin: 0 0 5px 0;
+      line-height: 1.1;
+      text-shadow: 0 1px 8px #0003, 0 2px 0 #fff1;
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+      animation: fadeInTitle 1.1s cubic-bezier(.43,1.8,.35,.87) 0.1s forwards;
+    }
+    @keyframes fadeInTitle {
+      100% { opacity: 1; transform: translateY(0) scale(1);}
     }
     .header p {
-      color: #fff;
-      font-size: 1.14rem;
-      letter-spacing: 0.3px;
-      margin: 0;
-      opacity: 0.92;
-      text-shadow: 0 2px 18px #23242c80;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      color: var(--text-muted);
+      font-size: 1.04rem;
       font-weight: 600;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      text-shadow: 0 1px 3px #fff2;
+      margin: 0;
+      animation: fadeInSubtitle 1.2s cubic-bezier(.36,1.5,.65,1.05) 0.8s forwards;
+      transform: translateY(16px);
     }
-    @keyframes floatTitle {
-      0% { transform: translateY(-40px) scale(1.1); opacity: 0; }
-      100% { transform: translateY(0) scale(1); opacity: 1;}
+    @keyframes fadeInSubtitle {
+      100% { opacity: 0.75; transform: translateY(0);}
     }
     .card-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 38px;
+      gap: 22px;
       justify-content: center;
-      width: 95vw;
-      max-width: 1080px;
-      margin: 40px 0 0 0;
+      width: 100vw;
+      max-width: 920px;
+      margin: 35px 0 0 0;
       position: relative;
       z-index: 1;
     }
     .card {
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
       background: var(--card-bg);
-      border-radius: 25px;
-      box-shadow: var(--shadow);
-      padding: 40px 36px 34px 36px;
-      min-width: 250px;
-      max-width: 320px;
-      flex: 1 1 265px;
+      color: #fff;
+      border: 0;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      min-width: 220px;
+      max-width: 295px;
+      flex: 1 1 210px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      border: none;
       position: relative;
-      transition: 
-        box-shadow 0.25s cubic-bezier(.4,2,.7,.8),
-        background 0.26s cubic-bezier(.51,2,.7,.8),
-        filter .18s,
-        transform .20s cubic-bezier(.39,1.79,.58,.98);
-      cursor: pointer;
-      user-select: none;
-      will-change: transform;
-      outline: none;
-      /* For pointer event effect: */
-      perspective: 900px;
-      backface-visibility: hidden;
-      margin-bottom: 16px;
-    }
-    .card:before {
-      content: "";
-      position: absolute;
-      left: 18px; top: 18px; right: 18px; bottom: 18px;
-      border-radius: 19px;
-      background: linear-gradient(120deg, var(--color5), var(--color2) 75%);
-      opacity: 0.07;
-      pointer-events: none;
-      z-index: 0;
+      padding: 30px 22px 26px 22px;
+      margin-bottom: 8px;
+      cursor: default;
+      transition:
+        box-shadow var(--transition),
+        filter var(--transition),
+        transform var(--transition),
+        background var(--transition);
+      filter: drop-shadow(0 1px 2px #0005);
     }
     .card-title {
-      font-size: 1.22rem;
-      font-family: 'Montserrat', 'Roboto', serif;
-      color: var(--color2);
-      font-weight: bold;
-      letter-spacing: .5px;
-      z-index: 1;
-      margin-bottom: 8px;
-      text-shadow: 0 1px 3px #fff9, 0 2px 10px #43e97b88;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      font-size: 1.17rem;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .01em;
+      margin-bottom: 7px;
+      text-shadow: 0 1px 6px #0005;
     }
     .card-desc {
-      font-size: 1.07rem;
-      color: #23242cdd;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      font-size: 0.98rem;
+      color: var(--text-muted);
       margin-bottom: 18px;
-      z-index: 1;
-      font-weight: 500;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      line-height: 1.35;
+      text-shadow: 0 1px 3px #0004;
     }
     .open-btn {
       margin-top: auto;
-      padding: 11px 28px;
-      background: linear-gradient(90deg, var(--color2) 60%, var(--color4));
-      color: #fff;
+      padding: 9px 24px 8px 24px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
       border: none;
-      border-radius: 11px;
-      font-size: 1.08rem;
-      font-family: inherit;
-      font-weight: bold;
-      letter-spacing: .4px;
+      border-radius: calc(var(--radius) - 7px);
+      font-size: 1.07rem;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      letter-spacing: .03em;
       cursor: pointer;
-      transition: 
-        background .16s, 
-        color .14s, 
-        box-shadow .18s;
-      box-shadow: 0 2px 9px #43e97b40;
-      z-index: 1;
+      box-shadow: 0 2px 12px #0002;
+      outline: none;
+      transition:
+        background .15s,
+        color .15s,
+        box-shadow .15s;
+      border-bottom: 1.6px solid #e2e2e2;
     }
     .open-btn:hover, .card:active .open-btn {
-      background: linear-gradient(90deg, var(--color3) 20%, var(--color6) 90%);
-      color: var(--color2);
-      box-shadow: 0 3px 18px #43e97b59;
+      background: var(--btn-hover);
+      color: var(--btn-text-hover);
+      box-shadow: 0 4px 18px #fff3;
     }
     .card:hover, .card:focus-visible {
-      box-shadow: 0 8px 36px 4px #fc5c7d35, 0 1.5px 8px 0px #38f9d7cc;
-      background: linear-gradient(111deg, #fff 84%, #ffe9c8 120%);
-      filter: brightness(1.05);
+      box-shadow: 0 8px 30px 8px #0007, 0 1.5px 8px 0px #fff1;
+      filter: brightness(1.02) contrast(1.06);
+      transform: scale(1.03);
     }
-    @media (max-width: 900px) {
-      .card-list {flex-direction: column; gap: 30px;}
-      .card {max-width: 90vw;}
-      .header h1 {font-size: 1.9rem;}
+    @media (max-width: 800px) {
+      .card-list {flex-direction: column; gap: 16px;}
+      .card {max-width: 95vw;}
+      .header h1 {font-size: 1.3rem;}
     }
-    /* Görsel parıltı efekti: */
-    .gradient-circles {
+    .loading-bar {
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0;
+      left: 24px;
+      bottom: 25px;
+      background: #fff;
+      color: #232325;
+      border-radius: 11px;
+      padding: 11px 27px 11px 20px;
+      font-size: 1.07rem;
+      font-family: 'Inter', Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      box-shadow: 0 4px 18px #0002;
+      opacity: 0;
       pointer-events: none;
-      overflow: hidden;
+      transition: opacity .22s;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1.2px solid #ededed;
+      letter-spacing: 0.03em;
     }
-    .circle {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.23;
-      filter: blur(25px);
-      animation: moveCircle 22s linear infinite alternate;
-      mix-blend-mode: lighten;
+    .loading-bar.active {
+      opacity: 1;
+      animation: showLoad .18s cubic-bezier(.36,1.4,.61,1.18);
     }
-    .circle1 {background: var(--color3); width: 320px; height: 320px; left: 9vw; top: 12vh;}
-    .circle2 {background: var(--color2); width: 270px; height: 270px; left: 63vw; top: 19vh;}
-    .circle3 {background: var(--color4); width: 190px; height: 190px; left: 39vw; top: 61vh;}
-    @keyframes moveCircle {
-      to { transform: translateY(-60px) translateX(80px) scale(1.07);}
+    @keyframes showLoad {
+      0% {opacity:0; transform: translateY(24px) scale(.94);}
+      100% {opacity:1; transform: translateY(0) scale(1);}
+    }
+    .loading-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #333;
+      opacity: .34;
+      animation: loadDot 1.05s infinite cubic-bezier(.5,.8,.3,1.3);
+      margin-right: 1px;
+    }
+    .loading-dot:nth-child(1) {animation-delay: 0s;}
+    .loading-dot:nth-child(2) {animation-delay: 0.17s;}
+    .loading-dot:nth-child(3) {animation-delay: 0.33s;}
+    @keyframes loadDot {
+      0%, 100% {transform:scale(1);}
+      50% {transform:scale(1.55);}
     }
   </style>
 </head>
 <body>
-  <!-- Parıltı animasyonları için dekoratif elementler -->
-  <div class="gradient-circles">
-    <div class="circle circle1"></div>
-    <div class="circle circle2"></div>
-    <div class="circle circle3"></div>
+  <!-- Mouse trail -->
+  <canvas id="mouseTrail"></canvas>
+  <!-- Yükleniyor barı -->
+  <div id="loadingBar" class="loading-bar" aria-live="polite" aria-label="Yükleniyor">
+    <span class="loading-dot"></span>
+    <span class="loading-dot"></span>
+    <span class="loading-dot"></span>
+    Yükleniyor...
   </div>
+
   <div class="header">
-    <h1>Projelerim Ana Sayfa</h1>
-    <p>D&D yayın araçların ve yardımcı projelerin</p>
+    <h1>FRP İçin Araçlar</h1>
+    <p>Fantastik Roleplay için araçlar.</p>
   </div>
   <div class="card-list">
-    <div class="card" tabindex="0" onclick="window.location='BATTLE/battle.html'">
-      <div class="card-title">D&D OBS Savaş Sahnesi Yaratma</div>
-      <div class="card-desc">OBS veya yayın için özelleştirilebilir D&D savaş sahnesi oluşturma aracı.</div>
-      <button class="open-btn">Aç</button>
+    <div class="card" tabindex="0">
+      <div class="card-title">Kart Oyunu Tarzı Etkileşimli Sahne Düzenleme</div>
+      <div class="card-desc">Özelleştirilebilir kart savaş editörü.</div>
+      <button class="open-btn" data-target="BATTLE/battle.html">Aç</button>
     </div>
-    <div class="card" tabindex="0" onclick="window.location='hp-tracker.html'">
+    <div class="card" tabindex="0">
       <div class="card-title">HP Takip Aracı</div>
       <div class="card-desc">Karakterlerin can, zırh ve inisiyatiflerini takip et.</div>
-      <button class="open-btn">Aç</button>
+      <button class="open-btn" data-target="hptracker/hptracker.html">Aç</button>
     </div>
-    <div class="card" tabindex="0" onclick="window.location='bg3styledice/index.html'">
-      <div class="card-title">3D Zar Atıcı (BG3 Style)</div>
-      <div class="card-desc">Baldur's Gate 3 tarzı fizik tabanlı 3D zar simülatörü.</div>
-      <button class="open-btn">Aç</button>
+    <div class="card" tabindex="0">
+      <div class="card-title">BG3 Tarzı D20 Zar</div>
+      <div class="card-desc">Baldur's Gate 3 tarzı iki boyutlu D20 zar simülatörü.</div>
+      <button class="open-btn" data-target="bg3styledice/index.html">Aç</button>
     </div>
-    <!-- Yeni kart eklemek için buraya kopyala:
-    <div class="card" tabindex="0" onclick="window.location='dosya-adı.html'">
-      <div class="card-title">Başlık</div>
-      <div class="card-desc">Açıklama.</div>
-      <button class="open-btn">Aç</button>
-    </div>
-    -->
   </div>
   <script>
-    // Kartların imleci takip eden efekti için:
+    // Az ve yumuşak tilt efekti
     const cards = document.querySelectorAll('.card');
     let mouseX = 0, mouseY = 0;
+    let ticking = false;
 
-    // Sayfa mouse hareketlerini takip et
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      if (!ticking) {
+        window.requestAnimationFrame(applyTilt);
+        ticking = true;
+      }
+    });
+
+    function applyTilt() {
       cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const cardX = rect.left + rect.width / 2;
         const cardY = rect.top + rect.height / 2;
-        // Kart merkezinden imlece olan fark
-        const deltaX = (mouseX - cardX) / rect.width * 18;  // Maks 18 derece
-        const deltaY = (mouseY - cardY) / rect.height * 18;
-        // Yumuşak animasyon için requestAnimationFrame ile geçişli hareket
-        card.style.transform = `perspective(900px) rotateY(${deltaX}deg) rotateX(${-deltaY}deg) scale(1.03)`;
-        // Kayan gölge efekti
-        card.style.boxShadow = `0 ${10 + deltaY}px ${36 + Math.abs(deltaX)}px 4px #fc5c7d35, 0 1.5px 8px 0px #38f9d7cc`;
+        // Çok hafif tilt
+        const deltaX = Math.max(-1, Math.min(1, (mouseX - cardX) / rect.width * 1));
+        const deltaY = Math.max(-1, Math.min(1, (mouseY - cardY) / rect.height * 1));
+        let targetRotateX = -(deltaY * 5);
+        let targetRotateY = deltaX * 5;
+        let prev = card._tilt || {x:0, y:0};
+        let next = {
+          x: prev.x + (targetRotateX - prev.x) * 0.13,
+          y: prev.y + (targetRotateY - prev.y) * 0.13
+        };
+        card._tilt = next;
+        card.style.transform = `perspective(700px) rotateX(${next.x.toFixed(2)}deg) rotateY(${next.y.toFixed(2)}deg) scale(1.01)`;
       });
-    });
-
-    // Mouse kartların üzerinden çıkınca pozisyonları sıfırla (yavaşça!)
+      ticking = false;
+    }
     function resetCard(card) {
-      card.style.transition = 'transform .6s cubic-bezier(.26,1.55,.6,1)';
-      card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) scale(1)';
-      setTimeout(() => card.style.transition = '', 600);
+      card.style.transition = 'transform .55s cubic-bezier(.36,1.3,.56,1)';
+      card._tilt = {x:0, y:0};
+      card.style.transform = 'perspective(700px) rotateY(0deg) rotateX(0deg) scale(1)';
+      setTimeout(() => card.style.transition = '', 540);
     }
     cards.forEach(card => {
       card.addEventListener('mouseleave', () => resetCard(card));
-      card.addEventListener('blur', () => resetCard(card)); // Klavyeyle kart seçiliyse de sıfırla
-      // Kartlara odaklanınca (klavye erişimi için) biraz büyütme
+      card.addEventListener('blur', () => resetCard(card));
       card.addEventListener('focus', () => {
-        card.style.transform = 'scale(1.05)';
+        card.style.transform = 'scale(1.03)';
       });
     });
+
+    // Yalnızca "Aç" tuşuna tıklanınca yönlendirme!
+    const loadingBar = document.getElementById('loadingBar');
+    document.querySelectorAll('.open-btn').forEach(btn => {
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const url = btn.getAttribute('data-target');
+        loadingBar.classList.add('active');
+        setTimeout(()=>{
+          window.location = url;
+        },2000);
+      });
+    });
+
+    // Mouse trail: Parıltılı beyaz, fade'li, performans dostu
+    const trailCanvas = document.getElementById('mouseTrail');
+    let tW = window.innerWidth, tH = window.innerHeight;
+    let trail = [];
+    const TRAIL_LENGTH = 14;
+    function resizeTrailCanvas() {
+      tW = window.innerWidth; tH = window.innerHeight;
+      trailCanvas.width = tW; trailCanvas.height = tH;
+    }
+    window.addEventListener('resize', resizeTrailCanvas);
+    resizeTrailCanvas();
+
+    document.addEventListener('mousemove', (e) => {
+      trail.push({ x: e.clientX, y: e.clientY, t: Date.now() });
+      if (trail.length > TRAIL_LENGTH) trail.shift();
+    });
+
+    function drawTrail() {
+      const ctx = trailCanvas.getContext('2d');
+      ctx.clearRect(0,0,tW,tH);
+      for(let i=0; i<trail.length-1; i++){
+        let p1 = trail[i];
+        let p2 = trail[i+1];
+        let age = (Date.now() - p1.t) / 400;
+        let opacity = Math.max(0, 0.16 - age*0.11);
+        let width = 16 - i*1.3;
+        ctx.save();
+        ctx.globalAlpha = opacity;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        let grad=ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+        grad.addColorStop(0, "#fff");
+        grad.addColorStop(1, "#fff8");
+        ctx.strokeStyle = grad;
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 8;
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        ctx.restore();
+      }
+      requestAnimationFrame(drawTrail);
+    }
+    drawTrail();
   </script>
 </body>
 </html>
