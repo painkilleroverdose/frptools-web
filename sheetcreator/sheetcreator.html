@@ -5,319 +5,65 @@
   <title>D&D Karakter Sheet</title>
   <link href="https://fonts.googleapis.com/css?family=Cinzel:700&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      background: #23243a;
-      color: #e7e9fa;
-      font-family: 'Cinzel', serif;
-      height: 100%;
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      min-height: 100vh;
-      width: 100vw;
-      box-sizing: border-box;
-      overflow-x: hidden;
-    }
-    .container {
-      margin:32px 0; background: #24253c;
-      border-radius: 16px; box-shadow: 0 8px 32px #000b;
-      padding: 34px 32px; max-width: 1080px; width: 100%; min-width: 340px;
-      position: relative;
-    }
-    h1, h2 {
-      text-align:center; margin-bottom:12px;
-      text-shadow:0 2px 8px #2224,0 1px 1px #101024;
-      letter-spacing:1.5px; color: #e7e9fa;
-    }
-    /* Sayfa üst layout */
-    .sheet-top {
-      display: flex; flex-direction: row; align-items: flex-start;
-      justify-content: space-between; gap: 32px; flex-wrap: wrap;
-    }
-    /* Portre */
-    .portrait-section {
-      display: flex; flex-direction: column; align-items: center;
-      min-width: 170px;
-    }
-    .portrait-section img {
-      width: 148px; height: 148px; border-radius: 12px;
-      border: 2.5px solid #484a8b; object-fit: cover;
-      background: #181926; margin-bottom: 7px;
-      transition: box-shadow 0.15s, border 0.14s;
-    }
-    .portrait-section img:hover {
-      box-shadow: 0 0 16px #8b8cf788;
-      border-color: #6c6fdc;
-    }
-    /* Temel Bilgiler */
-    .sheet-info {
-      flex: 2; min-width: 280px;
-      display: flex; flex-direction: column; gap: 5px;
-      padding: 14px 20px; background: #23243a;
-      border-radius: 12px;
-      box-shadow: 0 0 8px #1919311f;
-      margin-bottom: 10px;
-    }
+    html, body { background: #23243a; color: #e7e9fa; font-family: 'Cinzel', serif; min-height: 100vh; margin: 0; padding: 0; }
+    body { display: flex; flex-direction: column; align-items: center; min-height: 100vh; width: 100vw; box-sizing: border-box; overflow-x: hidden; }
+    .container { margin:32px 0; background: #24253c; border-radius: 16px; box-shadow: 0 8px 32px #000b; padding: 34px 32px; max-width: 1080px; width: 100%; min-width: 340px; position: relative; }
+    h1, h2 { text-align:center; margin-bottom:12px; text-shadow:0 2px 8px #2224,0 1px 1px #101024; letter-spacing:1.5px; color: #e7e9fa; }
+    .sheet-top { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; justify-content: space-between; }
+    .portrait-section { display: flex; flex-direction: column; align-items: center; min-width: 170px; }
+    .portrait-section img { width: 148px; height: 148px; border-radius: 12px; border: 2.5px solid #484a8b; object-fit: cover; background: #181926; margin-bottom: 7px; transition: box-shadow 0.15s, border 0.14s; }
+    .portrait-section img:hover { box-shadow: 0 0 16px #8b8cf788; border-color: #6c6fdc; }
+    .sheet-info { flex: 2; min-width: 280px; display: flex; flex-direction: column; gap: 5px; padding: 14px 20px; background: #23243a; border-radius: 12px; box-shadow: 0 0 8px #1919311f; margin-bottom: 10px; }
     .sheet-info label { display:inline-block; width:84px; font-weight:700; color:#c0c5e0; }
     .sheet-info input[type="text"], .sheet-info select,
-    .add-item-form input, .add-item-form select {
-      border:1.5px solid #484a8b; border-radius:6px; background:#282947;
-      color: #e7e9fa;
-      padding:4px 8px; margin:0 4px 4px 0; font-size:15px;
-      transition: border-color .15s, box-shadow .16s;
-    }
+    .add-item-form input, .add-item-form select { border:1.5px solid #484a8b; border-radius:6px; background:#282947; color: #e7e9fa; padding:4px 8px; margin:0 4px 4px 0; font-size:15px; transition: border-color .15s, box-shadow .16s; }
     .sheet-info input[type="text"]:focus, .sheet-info select:focus,
-    .add-item-form input:focus, .add-item-form select:focus {
-      border-color: #7b7ce9;
-      box-shadow: 0 0 0 2px #595be633;
-      outline: none;
-    }
-    /* Stat kutusu */
-    .stat-box {
-      background: #23243a;
-      box-shadow:0 0 10px #19193133; border-radius:10px;
-      min-width:230px; max-width: 275px;
-      padding: 10px 15px 18px 15px;
-      flex: 1;
-      margin-left: auto;
-    }
-    .section-title {
-      text-align:center; font-size:22px; margin-top:5px; margin-bottom:14px;
-      width: 100%; display: block; color: #e7e9fa;
-      font-weight: 700;
-    }
-    .stat-item {
-      display:flex; justify-content:space-between; align-items:center;
-      margin:8px 0 7px 0; gap: 8px; position: relative;
-    }
-    .stat-item span:first-child {
-      width: 55px; text-align: left; font-weight: 700;
-    }
-    .stat-controls {
-      display: flex; align-items: center; gap: 7px; flex-shrink: 0;
-    }
-    .stat-controls button {
-      width:28px; height:28px; border-radius:6px; border:1.5px solid #484a8b;
-      background:#2d2f4c; font-size:19px; font-weight:700; cursor:pointer;
-      padding:0; color: #f1f2fa;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .14s, color .14s, border .14s;
-    }
+    .add-item-form input:focus, .add-item-form select:focus { border-color: #7b7ce9; box-shadow: 0 0 0 2px #595be633; outline: none; }
+    .stat-box { background: #23243a; box-shadow:0 0 10px #19193133; border-radius:10px; min-width:230px; max-width: 275px; padding: 10px 15px 18px 15px; flex: 1; margin-left: auto; }
+    .section-title { text-align:center; font-size:22px; margin-top:5px; margin-bottom:14px; width: 100%; color: #e7e9fa; font-weight: 700; }
+    .stat-item { display:flex; justify-content:space-between; align-items:center; margin:8px 0 7px 0; gap: 8px; }
+    .stat-item span:first-child { width: 55px; text-align: left; font-weight: 700; }
+    .stat-controls { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .stat-controls button { width:28px; height:28px; border-radius:6px; border:1.5px solid #484a8b; background:#2d2f4c; font-size:19px; font-weight:700; cursor:pointer; padding:0; color: #f1f2fa; display: flex; align-items: center; justify-content: center; transition: background .14s, color .14s, border .14s; }
     .stat-controls button:disabled { background:#191931bb; color: #7c7c99; cursor:not-allowed; }
-    .stat-controls span {
-      display: inline-block; min-width: 26px; text-align: center; font-size: 16px; color: #fff;
-      font-family: inherit;
-    }
-    .stat-bonus-box {
-      margin-left: 8px;
-      display: flex; flex-direction: column; align-items: flex-end;
-      font-size: 13px; line-height: 1.15; font-weight: 600; min-width: 65px;
-      color: #70c0fa;
-    }
-    .stat-bonus-box .eq {
-      color: #71f4c6;
-      font-size: 12.6px; font-weight: 600;
-    }
-    .stat-bonus-box .race {
-      color: #9bd7ff;
-      font-size: 12.2px;
-    }
+    .stat-controls span { min-width: 26px; text-align: center; font-size: 16px; color: #fff; }
+    .stat-bonus-box { margin-left: 8px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; line-height: 1.15; font-weight: 600; min-width: 65px; color: #70c0fa; }
+    .stat-bonus-box .eq { color: #71f4c6; font-size: 12.6px; }
+    .stat-bonus-box .race { color: #9bd7ff; font-size: 12.2px; }
     .stat-bonus-box .none { color: #7c8299; font-weight: 400; }
-    .stat-points {
-      font-weight:bold; margin-top:16px; color: #c0c5e0; font-size: 16px; margin-bottom: 3px;
-    }
-    .bonus-overview {
-      margin-top: 6px; color: #fff; font-size: 16px; font-family: 'Cinzel', serif;
-      letter-spacing: 0.1px; font-weight: 600;
-      text-shadow: 0 1px 2px #2224;
-      line-height: 1.28;
-    }
-    /* Ekipman */
-    .equip-section {
-      width: 100%; display: flex; flex-direction: column; align-items: flex-start;
-      margin-bottom: 12px; margin-top: 10px;
-    }
-    .equip-title {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 7px;
-      margin-left: 3px;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 0.8px;
-      color: #c0c5e0;
-    }
-    .equip-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 80px);
-      grid-template-rows: repeat(3, 80px);
-      gap: 14px;
-      margin-bottom: 8px;
-    }
-    .equip-slot {
-      background: #282947;
-      border: 2px solid #484a8b;
-      border-radius: 10px;
-      width: 80px; height: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      font-size: 17px;
-      position: relative;
-      text-align: center;
-      color: #e7e9fa;
-      box-shadow: 0 2px 7px #23253a33;
-      transition: background .14s, box-shadow .14s, color .14s, transform .13s;
-    }
-    .equip-slot span {
-      font-size: 28px;
-      margin-bottom: 2px;
-    }
-    .equip-slot.drag-over, .equip-slot:hover {
-      background: #383a64;
-      box-shadow: 0 0 17px #37549c27;
-      color: #e3e8fd;
-      transform: scale(1.04);
-    }
+    .stat-points { font-weight:bold; margin-top:16px; color: #c0c5e0; font-size: 16px; margin-bottom: 3px; }
+    .bonus-overview { margin-top: 6px; color: #fff; font-size: 16px; font-family: 'Cinzel', serif; letter-spacing: 0.1px; font-weight: 600; text-shadow: 0 1px 2px #2224; line-height: 1.28; }
+    .equip-section { width: 100%; display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 12px; margin-top: 10px; }
+    .equip-title { width: 100%; text-align: left; margin-bottom: 7px; margin-left: 3px; font-size: 20px; font-weight: bold; letter-spacing: 0.8px; color: #c0c5e0; }
+    .equip-grid { display: grid; grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); gap: 14px; margin-bottom: 8px; }
+    .equip-slot { background: #282947; border: 2px solid #484a8b; border-radius: 10px; width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; user-select: none; font-size: 17px; position: relative; text-align: center; color: #e7e9fa; box-shadow: 0 2px 7px #23253a33; transition: background .14s, box-shadow .14s, color .14s, transform .13s; }
+    .equip-slot span { font-size: 28px; margin-bottom: 2px; }
+    .equip-slot.drag-over, .equip-slot:hover { background: #383a64; box-shadow: 0 0 17px #37549c27; color: #e3e8fd; transform: scale(1.04); }
     .equip-slot.dragging { opacity: 0.7; }
     .equip-slot div { margin-top: 2px; font-size: 13.5px; letter-spacing: 1px; }
-    /* Envanter alanı */
-    .inventory-section {
-      display: flex; flex-direction: column; align-items: flex-start;
-      margin-left: 4px; width: fit-content;
-    }
-    .inventory-title {
-      width: 100%;
-      text-align: left;
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-      color: #c0c5e0;
-    }
-    .inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-template-rows: repeat(3, 60px);
-      gap: 8px;
-      margin-bottom: 11px;
-      background: none;
-      justify-content: flex-start;
-    }
-    .inv-item {
-      background:#23243a; border:1.3px solid #484a8b;
-      border-radius:6px; width:60px; height:60px;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      font-size:18px; position:relative; cursor:grab; user-select:none;
-      transition: box-shadow .16s, background .16s, color .17s, transform .14s;
-      text-align:center;
-      box-sizing: border-box;
-      padding: 4px 2px 0 2px;
-      overflow: visible;
-      color: #e2e3ee;
-    }
-    .inv-item:not(.empty):hover {
-      background: #313259;
-      box-shadow: 0 3px 15px #6c74f022;
-      color: #f1edff;
-      transform: scale(1.05) translateY(-2px);
-    }
-    .inv-item.drag-over {
-      background: #454866;
-      box-shadow: 0 0 13px #43458e88;
-      transform: scale(1.09);
-    }
-    .inv-item.dragging {
-      opacity: 0.58; box-shadow: 0 0 18px #7c80cfcc; transform: scale(1.10) rotate(-2deg);
-    }
-    .inv-item.empty {
-      background:#191931; color:#7d8098; font-size:13px; cursor:default;
-    }
-    .item-icon {
-      font-size: 23px;
-      margin: 0 auto 0 auto;
-      line-height: 1;
-      height: 23px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #eceefb;
-    }
-    .item-label {
-      font-size: 12px;
-      font-weight: 600;
-      text-align: center;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 1px;
-      letter-spacing: 0.3px;
-      line-height: 1.1;
-      color: #c4c9f2;
-    }
-    .remove-btn {
-      position: absolute; top: 2px; right: 3px; border: none; background: none;
-      font-size: 15px; cursor: pointer; opacity: 0.65;
-      padding: 0; line-height: 1; z-index: 2;
-      color: #e7e9fa;
-      transition: opacity .15s, color .15s;
-    }
+    .inventory-section { display: flex; flex-direction: column; align-items: flex-start; margin-left: 4px; width: fit-content; }
+    .inventory-title { width: 100%; text-align: left; font-size: 20px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px; color: #c0c5e0; }
+    .inventory-grid { display: grid; grid-template-columns: repeat(5, 60px); grid-template-rows: repeat(3, 60px); gap: 8px; margin-bottom: 11px; background: none; justify-content: flex-start; }
+    .inv-item { background:#23243a; border:1.3px solid #484a8b; border-radius:6px; width:60px; height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:18px; position:relative; cursor:grab; user-select:none; transition: box-shadow .16s, background .16s, color .17s, transform .14s; text-align:center; box-sizing: border-box; padding: 4px 2px 0 2px; overflow: visible; color: #e2e3ee; }
+    .inv-item:not(.empty):hover { background: #313259; box-shadow: 0 3px 15px #6c74f022; color: #f1edff; transform: scale(1.05) translateY(-2px); }
+    .inv-item.drag-over { background: #454866; box-shadow: 0 0 13px #43458e88; transform: scale(1.09); }
+    .inv-item.dragging { opacity: 0.58; box-shadow: 0 0 18px #7c80cfcc; transform: scale(1.10) rotate(-2deg); }
+    .inv-item.empty { background:#191931; color:#7d8098; font-size:13px; cursor:default; }
+    .item-icon { font-size: 23px; margin: 0 auto 0 auto; line-height: 1; height: 23px; display: flex; align-items: center; justify-content: center; color: #eceefb; }
+    .item-label { font-size: 12px; font-weight: 600; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; letter-spacing: 0.3px; line-height: 1.1; color: #c4c9f2; }
+    .remove-btn { position: absolute; top: 2px; right: 3px; border: none; background: none; font-size: 15px; cursor: pointer; opacity: 0.65; padding: 0; line-height: 1; z-index: 2; color: #e7e9fa; transition: opacity .15s, color .15s; }
     .remove-btn:hover { opacity: 1; color: #e86b7d; }
-    .item-tooltip {
-      position: absolute;
-      left: 0; right: 0; top: -51px;
-      margin: auto;
-      width: 110px; min-height: 22px;
-      background: #16162d; color: #8ee4fc;
-      border: 1.4px solid #4b70a2;
-      border-radius: 7px;
-      padding: 6px 9px 6px 9px;
-      font-size: 12.6px;
-      font-family: 'Cinzel', serif;
-      font-weight: 500;
-      z-index: 99;
-      opacity: 0; pointer-events: none;
-      white-space: pre-line; box-shadow: 0 7px 26px #12123e2d;
-      transition: opacity .19s cubic-bezier(.45,0,1,1), transform .18s cubic-bezier(.52,0,.61,1);
-      transform: translateY(-7px) scale(0.93);
-    }
+    .item-tooltip { position: absolute; left: 0; right: 0; top: -51px; margin: auto; width: 110px; min-height: 22px; background: #16162d; color: #8ee4fc; border: 1.4px solid #4b70a2; border-radius: 7px; padding: 6px 9px 6px 9px; font-size: 12.6px; font-family: 'Cinzel', serif; font-weight: 500; z-index: 99; opacity: 0; pointer-events: none; white-space: pre-line; box-shadow: 0 7px 26px #12123e2d; transition: opacity .19s cubic-bezier(.45,0,1,1), transform .18s cubic-bezier(.52,0,.61,1); transform: translateY(-7px) scale(0.93); }
     .inv-item.show-tooltip .item-tooltip,
-    .equip-slot.show-tooltip .item-tooltip {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(-17px) scale(1.02);
-    }
-    .add-item-form {
-      margin-top: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0;
-      background: none;
-    }
-    .bonus-input-row {
-      display: flex; gap: 3px; align-items: center; margin-bottom: 3px; margin-top: 1px;
-    }
-    .bonus-input-row select, .bonus-input-row input[type="number"] {
-      border: 1.1px solid #484a8b; border-radius: 4px; background: #22233a; color: #e7e9fa;
-      font-size: 14px; padding: 2.5px 5px; width: 65px; transition: border .13s;
-    }
+    .equip-slot.show-tooltip .item-tooltip { opacity: 1; pointer-events: auto; transform: translateY(-17px) scale(1.02); }
+    .add-item-form { margin-top: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0; background: none; }
+    .bonus-input-row { display: flex; gap: 3px; align-items: center; margin-bottom: 3px; margin-top: 1px; }
+    .bonus-input-row select, .bonus-input-row input[type="number"] { border: 1.1px solid #484a8b; border-radius: 4px; background: #22233a; color: #e7e9fa; font-size: 14px; padding: 2.5px 5px; width: 65px; transition: border .13s; }
     .bonus-input-row input[type="number"] { width: 38px; text-align: center; }
-    .remove-bonus-btn {
-      border:none; background:none; color:#e86b7d; font-size:17px; margin-left:4px; cursor:pointer;
-      padding:0 2px; font-weight:700;
-    }
-    .add-bonus-btn {
-      background: #385e9c; color: #a8e5ff; border: 1.3px solid #384f83; border-radius: 5px;
-      font-size: 13px; padding: 4px 12px; cursor: pointer; margin-right: 2px; margin-left: 7px;
-      transition: background .13s, color .13s, border .13s;
-    }
+    .remove-bonus-btn { border:none; background:none; color:#e86b7d; font-size:17px; margin-left:4px; cursor:pointer; padding:0 2px; font-weight:700; }
+    .add-bonus-btn { background: #385e9c; color: #a8e5ff; border: 1.3px solid #384f83; border-radius: 5px; font-size: 13px; padding: 4px 12px; cursor: pointer; margin-right: 2px; margin-left: 7px; transition: background .13s, color .13s, border .13s; }
     .add-bonus-btn:hover { background: #2a3d5c; color: #e8faff; border-color: #3e6ebf; }
     .add-item-form input[type="text"] { min-width: 105px; }
-    /* Responsive */
     @media (max-width: 900px) {
       .sheet-top { flex-direction: column; gap: 17px;}
       .stat-box { margin-left: 0; margin-top: 20px;}
@@ -345,12 +91,10 @@
   <div class="container" id="sheetScreen" style="display:none;">
     <h2>Karakter Sayfası</h2>
     <div class="sheet-top">
-      <!-- Portre -->
       <div class="portrait-section">
         <img id="portraitImg" src="" alt="Portre">
-        <label for="portraitInput"><input type="file" id="portraitInput" accept="image/*" style="display:none;"></label>
+        <label><input type="file" id="portraitInput" accept="image/*" style="display:none;"></label>
       </div>
-      <!-- Temel Bilgiler -->
       <div class="sheet-info">
         <div><label>Adı:</label><input type="text" id="charName" maxlength="32"></div>
         <div><label>Irk:</label><select id="raceSelect"></select></div>
@@ -363,7 +107,6 @@
         </div>
         <div><label>Durum:</label><select id="statusSelect"><option>Canlı</option><option>Ölü</option><option>Baygın</option></select></div>
       </div>
-      <!-- Nitelikler -->
       <div class="stat-box">
         <div class="section-title">Nitelikler</div>
         <div id="statList"></div>
@@ -403,22 +146,20 @@
     </div>
   </div>
   <input type="file" id="loadFileInput" style="display:none;">
-
   <script>
-    // === Sabitler ve global state ===
     const allStats = ["GÜÇ","ÇEV","DAY","ZEK","BİL","KRZ"];
     const RACE_BONUSES = {
-      "İNSAN":      { GÜÇ:1, ÇEV:1, DAY:1, ZEK:1, BİL:1, KRZ:1 },
-      "CÜCE":       { DAY:3, BİL:3 },
-      "DEV":        { DAY:5, GÜÇ:4, ZEK:-2, BİL:-1, ÇEV:-1 },
-      "EJDER KANI": { DAY:2, BİL:2, GÜÇ:2, KRZ:2, ÇEV:-3 },
-      "GRİFFİN KANI": { GÜÇ:2, ZEK:2, KRZ:3, ÇEV:-1 },
-      "ARAKNE KANI": { ÇEV:2, BİL:3, ZEK:2, GÜÇ:-1 },
-      "SÜRÜNGEN KANI": { ÇEV:3, DAY:3, ZEK:-1, BİL:-1 },
-      "MEMELİ KANI": { GÜÇ:1, ÇEV:1, DAY:1, ZEK:1, BİL:1, KRZ:1 },
-      "KUŞ KANI": { ÇEV:3, KRZ:3, ZEK:2, DAY:-1, BİL:-1 },
-      "YÜZGEÇLİ KANI": { DAY:1, ÇEV:3, BİL:3, ZEK:-3, KRZ:-3 },
-      "BÖCEK KANI": { ÇEV:5, GÜÇ:2, ZEK:-3, BİL:-3 }
+      "İNSAN":{GÜÇ:1,ÇEV:1,DAY:1,ZEK:1,BİL:1,KRZ:1},
+      "CÜCE":{DAY:3,BİL:3},
+      "DEV":{DAY:5,GÜÇ:4,ZEK:-2,BİL:-1,ÇEV:-1},
+      "EJDER KANI":{DAY:2,BİL:2,GÜÇ:2,KRZ:2,ÇEV:-3},
+      "GRİFFİN KANI":{GÜÇ:2,ZEK:2,KRZ:3,ÇEV:-1},
+      "ARAKNE KANI":{ÇEV:2,BİL:3,ZEK:2,GÜÇ:-1},
+      "SÜRÜNGEN KANI":{ÇEV:3,DAY:3,ZEK:-1,BİL:-1},
+      "MEMELİ KANI":{GÜÇ:1,ÇEV:1,DAY:1,ZEK:1,BİL:1,KRZ:1},
+      "KUŞ KANI":{ÇEV:3,KRZ:3,ZEK:2,DAY:-1,BİL:-1},
+      "YÜZGEÇLİ KANI":{DAY:1,ÇEV:3,BİL:3,ZEK:-3,KRZ:-3},
+      "BÖCEK KANI":{ÇEV:5,GÜÇ:2,ZEK:-3,BİL:-3}
     };
     const RACES = [
       {group:"İNSANSI",options:["İNSAN","CÜCE","DEV"]},
@@ -446,29 +187,22 @@
       başlık:"🪖",kolye:"📿",omuzluk:"🎽",silah:"⚔️",zırh:"🥋",
       kalkan:"🛡️",ayakkabı:"🥾",yüzük:"💍",ekstra:"🎒",envanter:"🎁"
     };
-    const STAT_KEYS = ["GÜÇ","ÇEV","DAY","ZEK","BİL","KRZ"];
-    let statMin=5, statMax=18;
-    let currentCharacter = null;
-    let equipped = [...Array(EQUIP_SLOTS.length).fill(null)];
-    let inventory = Array(15).fill(null);
-
-    // === Karakter işlemleri ===
+    let statMin=5, statMax=18, currentCharacter = null,
+        equipped = [...Array(EQUIP_SLOTS.length).fill(null)],
+        inventory = Array(15).fill(null), dragData=null, bonusInputs=[];
     function newCharacter() {
       currentCharacter = {
-        name:'', race:RACES[0].options[0], class:CLASSES[0].name, subclass:CLASSES[0].subclasses[0],
-        level:1, status:'Canlı',
-        stats:{}, statPoints:5, portrait:'',
+        name:'',race:RACES[0].options[0],class:CLASSES[0].name,subclass:CLASSES[0].subclasses[0],
+        level:1,status:'Canlı',stats:{},statPoints:5,portrait:'',
         equipped:[...Array(EQUIP_SLOTS.length).fill(null)],
         inventory:Array(15).fill(null),
-        money:{gold:10,silver:50,copper:0}, notes:''
+        money:{gold:10,silver:50,copper:0},notes:''
       };
       equipped = [...Array(EQUIP_SLOTS.length).fill(null)];
       inventory = Array(15).fill(null);
       showSheet();
     }
-    function loadCharacter(){
-      document.getElementById('loadFileInput').click();
-    }
+    function loadCharacter(){ document.getElementById('loadFileInput').click(); }
     document.getElementById('loadFileInput').addEventListener('change',e=>{
       let file=e.target.files[0]; if(!file) return;
       let reader=new FileReader(); reader.onload=evt=>{
@@ -497,8 +231,6 @@
       document.getElementById('mainScreen').style.display='';
       currentCharacter=null;
     }
-
-    // === Stat hesaplama ===
     function getRaceBonus(race) { return RACE_BONUSES[race] || {}; }
     function getStatEqBonus(statKey) {
       let bonus = 0;
@@ -509,27 +241,24 @@
       return bonus;
     }
     function getStatWithBonus(k) {
-      let base = 5;
-      let bonusRace = getRaceBonus(currentCharacter.race)[k] || 0;
-      let spent = currentCharacter.stats[k] || 0;
-      let eqBonus = getStatEqBonus(k);
+      let base = 5, bonusRace = getRaceBonus(currentCharacter.race)[k] || 0,
+          spent = currentCharacter.stats[k] || 0, eqBonus = getStatEqBonus(k);
       return base + bonusRace + spent + eqBonus;
     }
     function calcStatPoints() {
-      let level = currentCharacter.level;
-      let total = 5 + (level-1)*3;
-      let used = 0; for(let k of STAT_KEYS) used += (currentCharacter.stats[k]||0);
+      let total = 5 + (currentCharacter.level-1)*3,
+          used = allStats.reduce((a,k)=>a+(currentCharacter.stats[k]||0),0);
       currentCharacter.statPoints = total - used;
     }
     function renderStats() {
       calcStatPoints();
       let list=document.getElementById('statList'); list.innerHTML='';
       let raceBonus = getRaceBonus(currentCharacter.race);
-      STAT_KEYS.forEach(k=>{
-        let spent = currentCharacter.stats[k]||0;
-        let bonus = raceBonus[k]||0;
-        let eqBonus = getStatEqBonus(k);
-        let totalVal = 5 + bonus + spent + eqBonus;
+      allStats.forEach(k=>{
+        let spent = currentCharacter.stats[k]||0,
+            bonus = raceBonus[k]||0,
+            eqBonus = getStatEqBonus(k),
+            totalVal = 5 + bonus + spent + eqBonus;
         let row=document.createElement('div'); row.className='stat-item';
         let bonusesHtml = `<div class="stat-bonus-box">`;
         if(bonus) bonusesHtml += `<span class="race">Irk: ${bonus>0?'+':''}${bonus}</span>`;
@@ -551,11 +280,8 @@
       updateBonuses();
     }
     function changeStat(k,d){
-      let spent = currentCharacter.stats[k] || 0;
-      let bonus = getRaceBonus(currentCharacter.race)[k] || 0;
-      let eqBonus = getStatEqBonus(k);
-      let current = 5 + bonus + spent + eqBonus;
-      let next = 5 + bonus + spent + eqBonus + d;
+      let spent = currentCharacter.stats[k] || 0, bonus = getRaceBonus(currentCharacter.race)[k] || 0, eqBonus = getStatEqBonus(k),
+          current = 5 + bonus + spent + eqBonus, next = 5 + bonus + spent + eqBonus + d;
       if(next < statMin || next > statMax) return;
       if(d > 0 && currentCharacter.statPoints <= 0) return;
       if(d < 0 && spent <= 0) return;
@@ -563,25 +289,17 @@
       renderStats();
     }
     function updateBonuses(){
-      let s = {};
-      for (let k of STAT_KEYS) s[k] = getStatWithBonus(k);
-      let eg=s['DAY']-5; let hp=25+(eg>0?eg*3:0);
-      let ec=s['ÇEV']-5; let ac=5+(ec>0?Math.floor(ec/2):0);
-      let eguc=s['GÜÇ']-5; let fiz=eguc>0?Math.floor(eguc/2):0;
-      let ebil=s['BİL']-5; let buyu=ebil>0?Math.floor(ebil/2)*2:0;
+      let s = {}, eg, ec, eguc, ebil, hp, ac, fiz, buyu;
+      allStats.forEach(k=>s[k]=getStatWithBonus(k));
+      eg=s['DAY']-5; hp=25+(eg>0?eg*3:0);
+      ec=s['ÇEV']-5; ac=5+(ec>0?Math.floor(ec/2):0);
+      eguc=s['GÜÇ']-5; fiz=eguc>0?Math.floor(eguc/2):0;
+      ebil=s['BİL']-5; buyu=ebil>0?Math.floor(ebil/2)*2:0;
       document.getElementById('bonusList').innerHTML=
-        `Can Puanı: ${hp}<br>
-        Zırh Puanı: ${ac}<br>
-        Fiziksel Bonus: +${fiz}<br>
-        Büyü Bonus: +${buyu}`;
+        `Can Puanı: ${hp}<br>Zırh Puanı: ${ac}<br>Fiziksel Bonus: +${fiz}<br>Büyü Bonus: +${buyu}`;
     }
     function levelUp() { if(currentCharacter.level < 20) { currentCharacter.level++; renderSheet(); } }
     function levelDown() { if(currentCharacter.level > 1) { currentCharacter.level--; renderSheet(); } }
-
-    // === Ekipman & Envanter ===
-    let dragData=null;
-
-    // --- GÜNCEL FONKSİYON 1 ---
     function renderEquipGrid(){
       let grid=document.getElementById('equipGrid'); grid.innerHTML='';
       EQUIP_SLOTS.forEach((slot,i)=>{
@@ -594,10 +312,8 @@
               ${(equipped[i].bonuses&&equipped[i].bonuses.length)?equipped[i].bonuses.map(b=>`${b.stat} ${b.amount>0?'+':''}${b.amount}`).join('<br>'):'<span style="opacity:.6;">Bonus yok</span>'}
             </div>
           `;
-          el.title = ""; // Eski title bilgisini kaldır
-        } else {
-          el.innerHTML=`<span>${slot.icon}</span><div style="opacity:0.5;">${slot.name}</div>`;
-        }
+          el.title = "";
+        } else el.innerHTML=`<span>${slot.icon}</span><div style="opacity:0.5;">${slot.name}</div>`;
         el.ondragover=e=>{e.preventDefault();el.classList.add('drag-over');};
         el.ondragleave=e=>el.classList.remove('drag-over');
         el.ondrop=e=>{
@@ -632,21 +348,16 @@
             inventory[emptyIdx]=equipped[i]; equipped[i]=null;
             currentCharacter.equipped=equipped; renderEquipGrid(); renderInventory(); renderStats();
           };
-          // === Tooltip hover ===
           el.onmouseenter = ()=>el.classList.add('show-tooltip');
           el.onmouseleave = ()=>el.classList.remove('show-tooltip');
         }
         grid.appendChild(el);
       });
     }
-
-    // --- GÜNCEL FONKSİYON 2 ---
     function renderInventory(){
       let invEl=document.getElementById('inventory'); invEl.innerHTML='';
       for(let i=0;i<15;i++){
-        let item=inventory[i];
-        let el=document.createElement('div');
-        el.className='inv-item';
+        let item=inventory[i],el=document.createElement('div'); el.className='inv-item';
         if(item){
           el.innerHTML = `
             <div class="item-icon">${TYPE_ICONS[item.type]||'🎁'}</div>
@@ -663,10 +374,7 @@
           el.appendChild(btn);
           el.onmouseenter = ()=>el.classList.add('show-tooltip');
           el.onmouseleave = ()=>el.classList.remove('show-tooltip');
-        } else {
-          el.classList.add('empty');
-          el.innerHTML='<span style="opacity:.35;">Boş</span>';
-        }
+        } else { el.classList.add('empty'); el.innerHTML='<span style="opacity:.35;">Boş</span>'; }
         el.ondragover = e => { e.preventDefault(); el.classList.add('drag-over'); };
         el.ondragleave = e => el.classList.remove('drag-over');
         el.ondrop = e => {
@@ -689,23 +397,15 @@
         invEl.appendChild(el);
       }
     }
-
-    // === Eşya eklerken bonus inputları ===
-    let bonusInputs = [];
     function addBonusInput() {
       if(bonusInputs.length >= 6) return;
       bonusInputs.push({stat:"GÜÇ",amount:1});
       renderBonusInputs();
     }
-    function removeBonusInput(idx){
-      bonusInputs.splice(idx,1); renderBonusInputs();
-    }
-    function updateBonusInput(idx,field,val){
-      bonusInputs[idx][field]=field==="amount"?parseInt(val):val; renderBonusInputs();
-    }
+    function removeBonusInput(idx){ bonusInputs.splice(idx,1); renderBonusInputs(); }
+    function updateBonusInput(idx,field,val){ bonusInputs[idx][field]=field==="amount"?parseInt(val):val; renderBonusInputs(); }
     function renderBonusInputs(){
-      const cont = document.getElementById('bonusInputs');
-      cont.innerHTML = "";
+      const cont = document.getElementById('bonusInputs'); cont.innerHTML = "";
       bonusInputs.forEach((b,i)=>{
         cont.innerHTML += `
           <span class="bonus-input-row">
@@ -718,12 +418,10 @@
         `;
       });
     }
-
-    // === Eşya ekleme ===
     document.getElementById('addItemForm').addEventListener('submit',e=>{
       e.preventDefault();
-      let name=document.getElementById('itemNameInput').value.trim();
-      let type=document.getElementById('itemTypeInput').value;
+      let name=document.getElementById('itemNameInput').value.trim(),
+          type=document.getElementById('itemTypeInput').value;
       if(!name) return;
       let idx=inventory.findIndex(x=>!x);
       if(idx===-1) { alert('Envanter dolu!'); return; }
@@ -734,16 +432,12 @@
       bonusInputs = []; renderBonusInputs();
       renderInventory(); renderStats();
     });
-
-    // === Karakter kaydet ===
     function saveCharacter(){
       currentCharacter.equipped=equipped; currentCharacter.inventory=inventory;
       let blob=new Blob([JSON.stringify({character:currentCharacter},null,2)],{type:'application/json'});
       let a=document.createElement('a'); a.href=URL.createObjectURL(blob);
       a.download=(currentCharacter.name||'karakter')+'.json'; a.click();
     }
-
-    // === Portre ve temel input eventleri ===
     document.getElementById('portraitImg').onclick=function(){
       document.getElementById('portraitInput').click();
     };
@@ -757,26 +451,15 @@
       };
       reader.readAsDataURL(file);
     };
-    document.getElementById('charName').oninput=function(e){
-      currentCharacter.name=e.target.value;
-    };
-    document.getElementById('raceSelect').onchange=function(e){
-      currentCharacter.race=e.target.value;
-      renderStats();
-    };
+    document.getElementById('charName').oninput=function(e){ currentCharacter.name=e.target.value; };
+    document.getElementById('raceSelect').onchange=function(e){ currentCharacter.race=e.target.value; renderStats(); };
     document.getElementById('classSelect').onchange=function(e){
       currentCharacter.class=e.target.value;
       fillSubclassSelect(currentCharacter.class);
       currentCharacter.subclass=document.getElementById('subclassSelect').value;
     };
-    document.getElementById('subclassSelect').onchange=function(e){
-      currentCharacter.subclass=e.target.value;
-    };
-    document.getElementById('statusSelect').onchange=function(e){
-      currentCharacter.status=e.target.value;
-    };
-
-    // === Selectler ve ekran için ===
+    document.getElementById('subclassSelect').onchange=function(e){ currentCharacter.subclass=e.target.value; };
+    document.getElementById('statusSelect').onchange=function(e){ currentCharacter.status=e.target.value; };
     function renderSheet(){
       document.getElementById('portraitImg').src=currentCharacter.portrait||'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg';
       document.getElementById('charName').value=currentCharacter.name;
@@ -811,7 +494,6 @@
         let opt=document.createElement('option'); opt.value=sc; opt.innerText=sc; sel.appendChild(opt);
       });
     }
-    // === Başlangıçta giriş ekranı göster ===
     window.onload = function() {
       document.getElementById('mainScreen').style.display='';
       document.getElementById('sheetScreen').style.display='none';
